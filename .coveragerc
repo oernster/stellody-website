@@ -1,0 +1,20 @@
+[run]
+branch = True
+source =
+    fastapi_stellody
+    site
+omit =
+    tests/*
+
+[paths]
+source =
+    site.py
+    */site.py
+
+[report]
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+
