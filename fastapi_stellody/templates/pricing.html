@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Pricing &amp; Licenses</h1>
+  <p>Stellody offers multiple license tiers:</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Demo</h2>
+      <p class="muted">Free · 14 days</p>
+      <ul>
+        <li>Limited to 3 source artists</li>
+        <li>Small dataset for faster setup</li>
+      </ul>
+      <a class="button button--primary" href="/demo">Start Demo</a>
+    </div>
+
+    <div class="card">
+      <h2>Standard</h2>
+      <p class="muted">£25 · 1 year</p>
+      <ul>
+        <li>Up to 50 artists per year</li>
+        <li>Broader analysis and playlist depth</li>
+      </ul>
+      <a class="button" href="/standard-license">View Standard License</a>
+    </div>
+
+    <div class="card">
+      <h2>Professional</h2>
+      <p class="muted">£50 · 1 year</p>
+      <ul>
+        <li>Unlimited source artists</li>
+        <li>Maximum playlist coverage</li>
+      </ul>
+      <a class="button" href="/pro-license">View Pro License</a>
+    </div>
+  </div>
+{% endblock %}
+

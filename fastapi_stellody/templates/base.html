@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} | Stellody</title>
+    <link rel="icon" href="/static/favicon.ico" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">
+          <a class="brand-link" href="/">Stellody</a>
+          <div class="brand-subtitle">Discover new music, sorted by genre</div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/why-stellody">Why Stellody?</a>
+          <a class="nav-link" href="/pricing">Pricing</a>
+          <a class="nav-link" href="/help">Help</a>
+          <a class="nav-link" href="/faq">FAQ</a>
+          <a class="nav-link" href="/contact">Contact</a>
+          <a class="nav-link" href="/change-log">Change-log</a>
+          <a class="nav-link nav-link--cta" href="/demo">Demo License</a>
+          <a class="nav-link" href="/cart">Cart</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 Stellody</p>
+      </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
+

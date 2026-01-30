@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Contact Stellody</h1>
+
+  <form class="form" method="post" action="/contact">
+    <label class="field">
+      <span class="field-label">Your name</span>
+      <input class="input" name="name" autocomplete="name" required />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Your email</span>
+      <input class="input" type="email" name="email" autocomplete="email" required />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Message</span>
+      <textarea class="textarea" name="msg" rows="6" required></textarea>
+    </label>
+
+    <div class="form-actions">
+      <button class="button button--primary" type="submit">Send</button>
+      <a class="button" href="/">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+

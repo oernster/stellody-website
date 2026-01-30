@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <h2>Version 5.2.1 - Jan 30, 2026</h2>
+    <p>
+      A performance-focused release delivering smarter concurrency, greater resilience under pressure,
+      and a polished, more refined UI. Rate limits remain respected, but Stellody now runs flatter-out
+      with less drama.
+    </p>
+
+    <h3>Concurrency and Performance</h3>
+    <ul>
+      <li>Significantly improved concurrency model - better background coordination across all phases.</li>
+      <li>Spotify and MusicBrainz rate limits now centrally enforced via a coordinator.</li>
+      <li>Automatic sizing of network threads and CPU worker processes to match host capabilities.</li>
+      <li>Better caching and shared lock coordination - avoids file corruption in multi-process environments.</li>
+    </ul>
+
+    <h3>Diagnostics and Logging</h3>
+    <ul>
+      <li>Introduced optional console output logging to file - toggle under Settings → Options.</li>
+      <li>
+        Rate limiting profiler now captures sleep timing, database time, and lock contention across all
+        API calls.
+      </li>
+    </ul>
+
+    <h3>Stability and Retry Logic</h3>
+    <ul>
+      <li>Fixed intermittent Spotify 403(-1) errors due to unsafe Spotify client reuse across threads.</li>
+      <li>Spotify clients are now thread-local, resolving malformed request issues under heavy load.</li>
+      <li>Step 1 collection phase now more resilient to transient API errors and throttling bursts.</li>
+    </ul>
+
+    <h3>UI Enhancements and Polish</h3>
+    <ul>
+      <li>Completed a visual overhaul of buttons, fonts and layout spacing.</li>
+      <li>All buttons now use consistent styling and colours with new hover state for interactivity.</li>
+      <li>Fixed tab ordering bugs - e.g. broom button now comes last.</li>
+      <li>Resolved phantom black right-side panel bug that appeared after closing options dialog.</li>
+      <li>Increased font size on Help/About views for readability.</li>
+      <li>Settings no longer falsely warn to save when nothing has changed.</li>
+    </ul>
+
+    <p>
+      <strong>Stellody v5.1.0</strong> is smarter, faster, and sleeker - pushing harder against the limits
+      without compromising stability or style.
+    </p>
+
+    <h2>Version 5.0.0 - January 2026</h2>
+    <p>
+      A substantial release restoring full playlist generation logic after deep refactor-induced
+      regressions. This update focuses on functional recovery, UI robustness, parallelism enhancements,
+      and ongoing architectural polish.
+    </p>
+
+    <h3>Core Feature Restorations &amp; Fixes</h3>
+    <ul>
+      <li>
+        Resolved critical playlist generation regression - playlists now generate correctly across all
+        genre and sub-genre groupings.
+      </li>
+      <li>
+        Improved playlist pool logic - larger, more diverse track pools ensure more balanced and
+        satisfying playlist curation.
+      </li>
+      <li>
+        Fixed numbering inconsistencies - playlist names now follow correct incrementing (e.g. Pop #1,
+        #2, #3...).
+      </li>
+      <li>
+        Improved sub-genre playlist fallback logic - now supports creation of smaller sub-genre playlists
+        where applicable.
+      </li>
+      <li>
+        Displayed artist name now visible during Step 1 of generation - shown beneath the progress bar
+        for transparency.
+      </li>
+    </ul>
+
+    <h3>UI and UX Improvements</h3>
+    <ul>
+      <li>
+        Corrected Stop button behaviour - now halts runs cleanly without exiting the application or
+        hanging the UI.
+      </li>
+      <li>
+        Improved console toggle persistence:
+        <ul>
+          <li>Console state now correctly restored on app relaunch.</li>
+          <li>Visual icon and output display are now properly synced.</li>
+        </ul>
+      </li>
+      <li>
+        Adjusted main title visual styling - now uses purple/mauve colouring with musical note emoji,
+        dynamic to dark/light mode.
+      </li>
+      <li>
+        Genre Focus dialog redesigned:
+        <ul>
+          <li>Moved to a two-column layout with ~95% width usage.</li>
+          <li>Save/Close buttons remain visible; content scrolls if too tall for small screens.</li>
+        </ul>
+      </li>
+      <li>Disabled maximise button across all platforms to prevent broken full-screen layouts.</li>
+    </ul>
+
+    <h3>Performance and Multicore Support</h3>
+    <ul>
+      <li>
+        Introduced multithreading and multicore usage to speed up generation phases while respecting
+        global rate limits.
+      </li>
+      <li>Parallelised internal phases without sacrificing API constraint compliance.</li>
+    </ul>
+
+    <h3>Console Output Improvements</h3>
+    <ul>
+      <li>
+        Scrubbed user-facing logs:
+        <ul>
+          <li>Removed MusicBrainz, Spotify and request hash identifiers from console output.</li>
+          <li>Cleaned up prefixes and internal request IDs for clearer, more user-friendly logging.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Refactoring and Architecture</h3>
+    <ul>
+      <li>Maintained <code>≤ 400 lines per file</code> structure throughout ongoing changes.</li>
+      <li>
+        Documented regression recovery logic and tagged <code>v3.0.0</code> as a known working generation
+        baseline.
+      </li>
+      <li>Introduced regression tests to prevent reintroducing playlist generation bugs in future.</li>
+    </ul>
+
+    <h3>Testing and Stability</h3>
+    <ul>
+      <li>Validated playlist generation success using pinned regression test cases.</li>
+      <li>Retested across all platforms: Windows, Linux, macOS.</li>
+      <li>Rebuilt and validated all installers via Nuitka builds.</li>
+    </ul>
+
+    <p>
+      <strong>Stellody v5.0.0</strong> is a recovery and acceleration release; restoring full functionality,
+      improving performance, and setting the groundwork for new features with speed and resilience in
+      mind.
+    </p>
+
+    <h2>Version 4.1.3 - January 2026</h2>
+    <p>
+      A focused release building on v4.0.0 with UI refinements, build improvements, and deeper
+      architectural polish. This update also improves Flatpak packaging and licensing compliance.
+    </p>
+
+    <h3>Notable Enhancements</h3>
+    <ul>
+      <li>Added ability to toggle console output via the UI - now accessible via Settings.</li>
+      <li>
+        Improved visual layout and text scaling:
+        <ul>
+          <li>Font sizes adjusted for clarity in the Options dialogue.</li>
+          <li>Enhanced tabbing experience for keyboard navigation across buttons and controls.</li>
+          <li>Minor button styling tweaks for consistency.</li>
+        </ul>
+      </li>
+      <li>Fixed a visual bug causing spinner icons to truncate unexpectedly.</li>
+    </ul>
+
+    <h3>Refactoring and Architecture</h3>
+    <ul>
+      <li>
+        Large-scale codebase refactor completed:
+        <ul>
+          <li>All Python files reduced to ≤ 400 lines for maintainability.</li>
+          <li>Improved adherence to OO and SOLID design principles.</li>
+        </ul>
+      </li>
+      <li>Updated architecture docs to reflect the revised code structure.</li>
+    </ul>
+
+    <h3>Build and Packaging Updates</h3>
+    <ul>
+      <li>
+        Flatpak build improvements:
+        <ul>
+          <li>Correct inclusion of <code>LICENSE-LGPL3.txt</code>.</li>
+          <li>
+            Resolved issues where the license files were present but not accessible from within the
+            sandbox.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Repository cleanup:
+        <ul>
+          <li>Removed committed Python DLLs to reduce clutter and improve repo hygiene.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Version and Release Management</h3>
+    <ul>
+      <li>Standardised version tagging from v4.1.0 through v4.1.3 for traceability.</li>
+      <li>Updated build scripts accordingly to reflect installer and binary consistency.</li>
+    </ul>
+
+    <p>
+      <strong>Stellody v4.1.3</strong> is a refinement-focused release - streamlining usability, improving
+      visual clarity, and continuing to build a solid foundation for future features and stability
+      across platforms.
+    </p>
+
+    <h2>Version 4.0.0 - January 2026</h2>
+    <p>
+      A major release focused on user interface improvements, licensing enhancements, and improved
+      cross-platform builds.
+    </p>
+
+    <h3>New Features</h3>
+    <ul>
+      <li>Added support for PKCE authentication - removes the need for a client secret.</li>
+      <li>Introduced year-range filtering for playlist generation.</li>
+      <li>
+        Added a console output toggle to the UI (off by default for cleaner usage).
+      </li>
+      <li>Enhanced the license system - supports Demo, Standard, and Pro tiers with time limits.</li>
+      <li>Integrated the license generator into the build system.</li>
+    </ul>
+
+    <h3>UI and UX Improvements</h3>
+    <ul>
+      <li>
+        Complete frontend UI revamp, including:
+        <ul>
+          <li>Redesigned options dialogue.</li>
+          <li>Updated progress bars with improved visuals and better ETA handling.</li>
+          <li>Improved sidebar indicators, About, and Help dialogues.</li>
+        </ul>
+      </li>
+      <li>Improved compatibility and layout handling on Linux and macOS.</li>
+      <li>Numerous layout, tab visibility, and styling adjustments.</li>
+    </ul>
+
+    <h3>Core Logic and Refactoring</h3>
+    <ul>
+      <li>
+        Improved playlist generation logic:
+        <ul>
+          <li>Increased artist variety within playlists.</li>
+          <li>Improved handling of playlist size limits and content diversity.</li>
+        </ul>
+      </li>
+      <li>
+        Significant codebase refactor:
+        <ul>
+          <li>Capped source files to approximately 400 lines for maintainability.</li>
+          <li>Removed unused or stray files.</li>
+        </ul>
+      </li>
+      <li>Improved playlist revision handling to avoid duplication.</li>
+    </ul>
+
+    <h3>Build and Installer Updates</h3>
+    <ul>
+      <li>
+        Updated and refined MSI, DMG, and Flatpak builds:
+        <ul>
+          <li>Removed unnecessary language files.</li>
+          <li>Updated build scripts for all platforms.</li>
+          <li>Ensured correct inclusion of LGPL license files.</li>
+        </ul>
+      </li>
+      <li>Optimised Nuitka OneFile builds - removed compression to improve launch speed.</li>
+      <li>Standardised version tagging and installer naming across platforms.</li>
+    </ul>
+
+    <h3>Bug Fixes</h3>
+    <ul>
+      <li>Fixed misleading progress bar estimates showing “0s remaining”.</li>
+      <li>Fixed bugs in license validation and feature gating.</li>
+      <li>Corrected console output display and redundant logging.</li>
+      <li>Addressed various installer naming and configuration quirks.</li>
+    </ul>
+
+    <h3>Documentation</h3>
+    <ul>
+      <li>Updated help content to reflect the time-limited licensing system.</li>
+      <li>Revised development and architecture documentation.</li>
+      <li>Acknowledged UX/UI inspiration and project credits in the About screen.</li>
+    </ul>
+
+    <p>
+      <strong>Stellody v4.0.0</strong> marks the most refined release to date, with improved performance,
+      usability, and a more maintainable architecture across the board.
+    </p>
+  </div>
+{% endblock %}
+

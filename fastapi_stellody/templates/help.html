@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card help-page">
+    <h1>STELLODY</h1>
+    <ul>
+      <li>Stellody is a play on words; Stellar and Melody</li>
+      <li>Discover new music from your local music library and create playlists organised by genre.</li>
+      <li>
+        <strong>NEW:</strong> Discover new music from existing Spotify playlists and create
+        genre-organised playlists.
+      </li>
+      <li>Will avoid copycat bands, tribute artists and duplicates where possible.</li>
+      <li>On completion of a run, please check your Spotify web UI.</li>
+      <li>Note that your Spotify app may take a short while to synchronise with the web UI.</li>
+      <li>
+        Deezer playlist generation is in draft currently since Deezer is currently not allowing new
+        applications.
+      </li>
+      <li>Currently supported on Windows/Linux/Mac.</li>
+      <li>
+        Please note that the demo licence will create a bunch of genre oriented playlists that will
+        not necessarily be related to your interests since you only have a small set of data as a
+        source.
+      </li>
+    </ul>
+
+    <h2>Music Discovery Modes</h2>
+    <div class="discovery-modes">
+      <h4>Stellody offers two ways to discover music:</h4>
+      <ul>
+        <li>
+          <strong>Local Music Library:</strong> Analyse your personal music collection stored on your
+          computer
+        </li>
+        <li>
+          <strong>Spotify Playlists:</strong> Analyse tracks from your existing Spotify playlists to
+          discover similar music and create new genre-based playlists
+        </li>
+      </ul>
+      You can choose either method based on your preference and music collection setup.
+    </div>
+
+    <h2>Licence Tiers</h2>
+    <div class="licence-tiers">
+      <ul>
+        <li>
+          <strong>Demo (Free, 14 days):</strong> limited to <strong>3 source artists</strong> in the
+          discovery pool.
+        </li>
+        <li>
+          <strong>Standard (£25, 1 year):</strong> up to <strong>50 source artists</strong> in the
+          discovery pool.
+        </li>
+        <li>
+          <strong>Professional (£50, 1 year):</strong> <strong>unlimited</strong> source artists.
+        </li>
+      </ul>
+      <strong>Note:</strong> Licence limits apply to the number of <em>source artists</em> Stellody
+      Analyses (artists discovered from your local library / playlists), not to the number of
+      similar-artist candidates Stellody can find.
+      <br />
+      <br />
+      <strong>Note:</strong> When available, Stellody can persist up to <strong>25</strong>
+      similar-artist candidates per source artist in <code>recommendations.json</code> (schema v2).
+    </div>
+
+    <h1>Before you start:</h1>
+
+    <h3>For Local Music Library Discovery:</h3>
+    <ul>
+      <li>
+        Option 1) Rip CDs to FLAC/mp3/other format and store them all in one super directory, with
+        subdirectories labelled by artist name; you can also have 'Various Artists' or 'Compilations'
+        as directories in this super directory for example.
+      </li>
+      <li>Option 2) Buy your music digitally and do the same.</li>
+    </ul>
+
+    <h3>For Spotify Playlist Discovery:</h3>
+    <ul>
+      <li>Ensure you have existing Spotify playlists with music you enjoy.</li>
+      <li>Your Spotify account will be accessed to read your playlist contents for analysis.</li>
+      <li>New genre-based playlists will be created based on the music found in your existing playlists.</li>
+      <li>No data is written to your playlists until the process is complete and confirmed.</li>
+    </ul>
+
+    <h3>Required Setup (for both modes):</h3>
+    <ul>
+      <li>
+        <strong>Spotify:</strong> You only need a regular Spotify account (Free or Premium). Stellody
+        uses Spotify’s OAuth login flow (PKCE) inside the app, so you do <em>not</em> need to create a
+        Spotify Developer app and you do <em>not</em> need to enter a Client ID / Client Secret.
+      </li>
+      <li>
+        To connect Spotify: open <strong>Settings | Options</strong>, go to
+        <strong>API Credentials</strong>, then click <strong>Login with Spotify</strong> and complete
+        the browser login prompt.
+      </li>
+      <li>
+        <strong>MusicBrainz:</strong> Create a
+        <a href="https://musicbrainz.org/" target="_blank" rel="noopener">MusicBrainz account</a>
+        (recommended for proper attribution). Stellody stores a MusicBrainz email for attribution
+        and rate-limit friendliness.
+      </li>
+      <li>
+        Your MusicBrainz email is linked to your Stellody licence email (they must match). This is
+        normal; it helps Stellody apply the correct licence/account linkage without asking for
+        secrets.
+      </li>
+      <li>
+        <strong>NOTE:</strong> If you have a large library or many Spotify playlists then the run will
+        take a while due to third‑party rate limits. Please be patient.
+      </li>
+    </ul>
+
+    <h2>Supported audio formats</h2>
+    <div class="note">
+      <strong>Note:</strong> Audio format support applies only when using Local Music Library discovery
+      mode. Spotify Playlist discovery mode works directly with Spotify's catalog.
+    </div>
+
+    <div class="formats">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Extensions</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fmt-type">Lossless</td>
+            <td>
+              <span class="fmt-code">flac</span>
+              <span class="fmt-code">alac</span>
+              <span class="fmt-code">wav</span>
+              <span class="fmt-code">aiff</span>
+              <span class="fmt-code">aif</span>
+              <span class="fmt-code">aifc</span>
+              <span class="fmt-code">wv</span>
+              <span class="fmt-code">ape</span>
+              <span class="fmt-code">tak</span>
+            </td>
+            <td class="fmt-notes">WV = WavPack; APE = Monkey’s Audio; TAK = Tom’s lossless Audio Kompressor</td>
+          </tr>
+          <tr>
+            <td class="fmt-type">Lossy</td>
+            <td>
+              <span class="fmt-code">mp3</span>
+              <span class="fmt-code">m4a</span>
+              <span class="fmt-code">aac</span>
+              <span class="fmt-code">ogg</span>
+              <span class="fmt-code">opus</span>
+              <span class="fmt-code">wma</span>
+              <span class="fmt-code">webm</span>
+            </td>
+            <td class="fmt-notes"></td>
+          </tr>
+          <tr>
+            <td class="fmt-type">Less common</td>
+            <td>
+              <span class="fmt-code">ac3</span>
+              <span class="fmt-code">mka</span>
+              <span class="fmt-code">ra</span>
+              <span class="fmt-code">ram</span>
+              <span class="fmt-code">mid</span>
+              <span class="fmt-code">midi</span>
+              <span class="fmt-code">caf</span>
+            </td>
+            <td class="fmt-notes">MKA = Matroska Audio; CAF = Apple Core Audio Format</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Usage</h3>
+    <ul>
+      <li>Click <strong>Music Discovery/Playlist Generation</strong>, then wait for all phases to complete.</li>
+      <li>
+        If you choose <strong>Spotify Playlists</strong> mode, you may be prompted to log in via the
+        browser (PKCE). No client keys or secrets are required.
+      </li>
+      <li>Once finished, check your Spotify playlists in the Spotify Web UI.</li>
+    </ul>
+
+    <h3>Notes</h3>
+    <ul>
+      <li>
+        The reason the app doesn't run at a million miles an hour is due to rate limiting from the
+        third party services I use; go too fast and you get blocked for 24h or longer.
+      </li>
+      <li>
+        When using Spotify Playlist discovery mode, the analysis time will depend on the number and
+        size of your existing playlists.
+      </li>
+      <li>
+        If you want to subsequently use another streaming service instead, then I can recommend
+        installing
+        <a href="https://www.tunemymusic.com/" target="_blank" rel="noopener">TuneMyMusic</a> to
+        transfer your Spotify playlists to your desired streaming service.
+      </li>
+      <li>
+        If you need to delete your playlists as a bulk update, then consider
+        <a href="https://soundiiz.com/" target="_blank" rel="noopener">Soundiiz</a> - you can create
+        a free account and handle that there.
+      </li>
+    </ul>
+  </div>
+
+  <style>
+    /* Scoped styles for this page only (keeps the global "pro" look intact). */
+    .help-page h1,
+    .help-page h2,
+    .help-page h3,
+    .help-page h4,
+    .help-page h5 {
+      color: #fff4b8; /* pale yellow */
+      letter-spacing: 0.02em;
+    }
+
+    .help-page p,
+    .help-page li,
+    .help-page td {
+      color: #ffffff;
+    }
+
+    .help-page ul {
+      margin-left: 1.2em;
+    }
+
+    .help-page ul li {
+      margin-bottom: 0.5em;
+    }
+
+    .help-page .discovery-modes,
+    .help-page .licence-tiers,
+    .help-page .formats {
+      margin-top: 1.5em;
+      margin-bottom: 2em;
+    }
+
+    .help-page .note {
+      background: rgba(255, 244, 184, 0.12);
+      border-left: 4px solid #fff4b8;
+      padding: 0.75em 1em;
+      margin: 1em 0;
+      color: #fff;
+      border-radius: 12px;
+    }
+
+    .help-page table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    .help-page th {
+      color: #fff4b8;
+      text-align: left;
+      border-bottom: 2px solid rgba(255, 244, 184, 0.85);
+      padding: 0.5em;
+    }
+
+    .help-page td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 0.5em;
+    }
+
+    .help-page .fmt-code {
+      display: inline-block;
+      background: rgba(255, 244, 184, 0.15);
+      border: 1px solid rgba(255, 244, 184, 0.4);
+      padding: 0.15em 0.45em;
+      margin: 0 0.2em 0.2em 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+      font-size: 0.85em;
+      color: #fff4b8;
+      border-radius: 8px;
+    }
+
+    .help-page .fmt-type {
+      font-weight: bold;
+      color: #fff4b8;
+    }
+
+    .help-page .fmt-notes {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .help-page a {
+      color: #9fd7ff;
+    }
+
+    .help-page a:hover {
+      text-decoration: underline;
+    }
+  </style>
+{% endblock %}
+
