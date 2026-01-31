@@ -3,6 +3,12 @@
 {% block content %}
   <h1>Contact Stellody</h1>
 
+  {% if request.query_params.get('sent') == '1' %}
+    <div class="notice notice--success">Thanks — your message has been sent.</div>
+  {% elif request.query_params.get('error') == '1' %}
+    <div class="notice notice--error">Unable to send right now. Please try again later.</div>
+  {% endif %}
+
   <form class="form" method="post" action="/contact">
     <label class="field">
       <span class="field-label">Your name</span>

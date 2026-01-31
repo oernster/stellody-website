@@ -1,8 +1,8 @@
 [run]
 branch = True
-source =
-    fastapi_stellody
-    site
+include =
+    fastapi_stellody/*
+    site.py
 omit =
     tests/*
 

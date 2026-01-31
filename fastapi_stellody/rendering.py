@@ -28,5 +28,7 @@ class JinjaPageRenderer:
             template_name,
             {
                 "title": title,
+                # Make query params available in templates (e.g. ?sent=1 / ?error=1).
+                "request": request,
             },
         )

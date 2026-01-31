@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 from fastapi.testclient import TestClient
 
+from fastapi_stellody.mail import Mailer
+
 
 @dataclass(frozen=True)
 class PageCase:
@@ -48,7 +50,7 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
         follow_redirects=False,
     )
     assert response.status_code == 303
-    assert response.headers["location"] == "/"
+    assert response.headers["location"] == "/contact?sent=1"
 
     # Exercise the handler body for full coverage.
     response = client.post(
@@ -61,7 +63,43 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
         follow_redirects=True,
     )
     assert response.status_code == 200
-    _assert_html_title(response.text, "Home")
+    _assert_html_title(response.text, "Contact")
+    assert "Thanks" in response.text
+
+
+def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
+    class _FailingFastMail:
+        async def send_message(self, *_args, **_kwargs) -> None:
+            raise RuntimeError("SMTP down")
+
+    client.app.state.mailer = Mailer(
+        fastmail=_FailingFastMail(),
+        contact_recipient=client.app.state.mailer.contact_recipient,
+    )
+
+    response = client.post(
+        "/contact",
+        data={
+            "name": "Test User",
+            "email": "test@example.com",
+            "msg": "Hello",
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/contact?error=1"
+
+    response = client.post(
+        "/contact",
+        data={
+            "name": "Test User",
+            "email": "test@example.com",
+            "msg": "Hello",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert "Unable to send right now" in response.text
 
 
 def test_static_assets_are_served(client: TestClient) -> None:

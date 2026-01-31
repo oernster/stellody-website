@@ -2,4 +2,4 @@ fastapi
 uvicorn[standard]
 jinja2
 python-multipart
-
+fastapi-mail>=1.4.1
