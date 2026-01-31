@@ -103,6 +103,20 @@ a:hover {
   gap: 10px;
 }
 
+/*
+  Allow a button-styled CTA inside the header nav without changing layout.
+  (We use a <form method="get"> to support querystring prefill.)
+*/
+.nav-form {
+  margin: 0;
+}
+
+.nav-form > .nav-link {
+  cursor: pointer;
+  font: inherit;
+  border: 0;
+}
+
 .nav-link {
   padding: 8px 10px;
   border-radius: 10px;

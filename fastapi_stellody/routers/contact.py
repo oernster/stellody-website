@@ -26,6 +26,8 @@ async def contact_get(request: Request, renderer: PageRenderer = Depends(get_ren
 async def contact_post(
     name: str = Form(...),
     email: EmailStr = Form(...),
+    # Optional for backwards-compatibility with older templates/tests.
+    subject: str | None = Form(None),
     message: str | None = Form(None),
     # Backwards-compatibility for older templates/clients.
     msg: str | None = Form(None),
@@ -46,10 +48,13 @@ async def contact_post(
             detail="Field required: message",
         )
 
+    resolved_subject = subject.strip() if subject is not None else "General contact"
+
     try:
         await email_sender.send_contact_email(
             name=name,
             email=str(email),
+            subject=resolved_subject,
             message=resolved_message,
         )
     except Exception as exc:

@@ -21,8 +21,18 @@
     </label>
 
     <label class="field">
+      <span class="field-label">Subject</span>
+      <input
+        class="input"
+        name="subject"
+        value="{{ request.query_params.get('subject', '') }}"
+        required
+      />
+    </label>
+
+    <label class="field">
       <span class="field-label">Message</span>
-      <textarea class="textarea" name="message" rows="6" required></textarea>
+      <textarea class="textarea" name="message" rows="6" required>{{ request.query_params.get('message', '') }}</textarea>
     </label>
 
     <div class="form-actions">

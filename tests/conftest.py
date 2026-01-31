@@ -9,8 +9,10 @@ from fastapi_stellody.app_factory import create_app
 
 
 class _FakeEmailSender:
-    async def send_contact_email(self, *, name: str, email: str, message: str) -> None:
-        _ = (name, email, message)
+    async def send_contact_email(
+        self, *, name: str, email: str, message: str, subject: str | None = None
+    ) -> None:
+        _ = (name, email, subject, message)
         return None
 
 

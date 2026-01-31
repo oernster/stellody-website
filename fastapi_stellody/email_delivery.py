@@ -26,21 +26,25 @@ class ResendEmailSender:
     # Use a verified sender when available (configurable via RESEND_FROM).
     from_address: str = "Stellody Contact <no-reply@stellody.com>"
 
-    async def send_contact_email(self, *, name: str, email: str, message: str) -> None:
+    async def send_contact_email(
+        self, *, name: str, email: str, message: str, subject: str = "General contact"
+    ) -> None:
         resend.api_key = self.api_key
 
         safe_name = html.escape(name)
         safe_email = html.escape(email)
+        safe_subject = html.escape(subject)
         safe_message = html.escape(message).replace("\n", "<br>")
 
         payload = {
             "from": self.from_address,
             "to": self.contact_recipient,
-            "subject": f"New Contact from {name}",
+            "subject": f"{safe_subject} (from {name})",
             "reply_to": email,
             "html": (
                 f"<p><strong>Name:</strong> {safe_name}</p>"
                 f"<p><strong>Email:</strong> {safe_email}</p>"
+                f"<p><strong>Subject:</strong> {safe_subject}</p>"
                 f"<p>{safe_message}</p>"
             ),
         }
