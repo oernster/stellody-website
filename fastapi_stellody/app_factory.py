@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from fastapi_stellody.mail import build_mailer_from_env
+from fastapi_stellody.email_delivery import build_resend_sender_from_env
 from fastapi_stellody.paths import AppPaths, default_paths
 from fastapi_stellody.rendering import JinjaPageRenderer
 from fastapi_stellody.routers import contact, home, pages, store
@@ -17,10 +17,10 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        # Shared mail sender (SMTP) configured via Render environment variables.
-        # Initialized on startup to avoid import-time failures (tests can override app.state.mailer).
-        if getattr(app.state, "mailer", None) is None:
-            app.state.mailer = build_mailer_from_env()
+        # Shared email sender (Resend) configured via Render environment variables.
+        # Initialized on startup to avoid import-time failures (tests can override app.state.email_sender).
+        if getattr(app.state, "email_sender", None) is None:
+            app.state.email_sender = build_resend_sender_from_env()
         yield
 
     app = FastAPI(title="Stellody Reimagined Multi-Page", lifespan=lifespan)
@@ -41,7 +41,7 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
     app.state.renderer = JinjaPageRenderer(templates=templates)
 
     # Allow tests to set this before lifespan runs.
-    app.state.mailer = None
+    app.state.email_sender = None
 
     app.include_router(home.router)
     app.include_router(pages.router)

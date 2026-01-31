@@ -1,4 +1,5 @@
 make_all_scripts.py
+ALL_PYTHON_SOURCES.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

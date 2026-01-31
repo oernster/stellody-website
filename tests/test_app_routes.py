@@ -4,8 +4,6 @@ from dataclasses import dataclass
 
 from fastapi.testclient import TestClient
 
-from fastapi_stellody.mail import Mailer
-
 
 @dataclass(frozen=True)
 class PageCase:
@@ -45,7 +43,7 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
         data={
             "name": "Test User",
             "email": "test@example.com",
-            "msg": "Hello",
+            "message": "Hello",
         },
         follow_redirects=False,
     )
@@ -58,7 +56,7 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
         data={
             "name": "Coverage User",
             "email": "coverage@example.com",
-            "msg": "Coverage",
+            "message": "Coverage",
         },
         follow_redirects=True,
     )
@@ -68,21 +66,18 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
 
 
 def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
-    class _FailingFastMail:
-        async def send_message(self, *_args, **_kwargs) -> None:
+    class _FailingEmailSender:
+        async def send_contact_email(self, *_args, **_kwargs) -> None:
             raise RuntimeError("SMTP down")
 
-    client.app.state.mailer = Mailer(
-        fastmail=_FailingFastMail(),
-        contact_recipient=client.app.state.mailer.contact_recipient,
-    )
+    client.app.state.email_sender = _FailingEmailSender()
 
     response = client.post(
         "/contact",
         data={
             "name": "Test User",
             "email": "test@example.com",
-            "msg": "Hello",
+            "message": "Hello",
         },
         follow_redirects=False,
     )
@@ -94,7 +89,7 @@ def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
         data={
             "name": "Test User",
             "email": "test@example.com",
-            "msg": "Hello",
+            "message": "Hello",
         },
         follow_redirects=True,
     )

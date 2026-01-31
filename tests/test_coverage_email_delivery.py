@@ -6,14 +6,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 from fastapi_stellody.app_factory import create_app
-from fastapi_stellody.dependencies import get_mailer
-from fastapi_stellody.mail import (
-    _get_env_bool,
-    _get_env_bool_with_fallback,
-    _get_env_int,
-    _get_env_required,
-    build_mailer_from_env,
-)
+from fastapi_stellody.dependencies import get_email_sender
+import fastapi_stellody.email_delivery as email_delivery
+from fastapi_stellody.email_delivery import _get_env_required, build_resend_sender_from_env
 
 
 def test_app_module_exports_asgi_app() -> None:
@@ -22,7 +17,7 @@ def test_app_module_exports_asgi_app() -> None:
     assert getattr(module, "app") is not None
 
 
-def test_mail_env_helpers(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_required_env_helper(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("X_REQUIRED", raising=False)
     with pytest.raises(RuntimeError):
         _get_env_required("X_REQUIRED")
@@ -34,96 +29,111 @@ def test_mail_env_helpers(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("X_REQUIRED", "  ok  ")
     assert _get_env_required("X_REQUIRED") == "  ok  "
 
-    monkeypatch.delenv("X_BOOL", raising=False)
-    assert _get_env_bool("X_BOOL", default=True) is True
 
-    monkeypatch.setenv("X_BOOL", "true")
-    assert _get_env_bool("X_BOOL", default=False) is True
-
-    monkeypatch.setenv("X_BOOL", "0")
-    assert _get_env_bool("X_BOOL", default=True) is False
-
-    monkeypatch.delenv("P", raising=False)
-    monkeypatch.delenv("F", raising=False)
-    assert _get_env_bool_with_fallback("P", "F", default=True) is True
-
-    monkeypatch.setenv("F", "true")
-    assert _get_env_bool_with_fallback("P", "F", default=False) is True
-
-    monkeypatch.setenv("P", "0")
-    assert _get_env_bool_with_fallback("P", "F", default=True) is False
-
-    monkeypatch.delenv("X_INT", raising=False)
-    assert _get_env_int("X_INT", default=587) == 587
-
-    monkeypatch.setenv("X_INT", "")
-    assert _get_env_int("X_INT", default=2525) == 2525
-
-    monkeypatch.setenv("X_INT", "123")
-    assert _get_env_int("X_INT", default=1) == 123
-
-
-def test_build_mailer_from_env_success(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MAIL_USERNAME", "user")
-    monkeypatch.setenv("MAIL_PASSWORD", "pass")
-    monkeypatch.setenv("MAIL_FROM", "no-reply@example.com")
-    monkeypatch.setenv("MAIL_SERVER", "smtp.example.com")
-    monkeypatch.setenv("MAIL_PORT", "587")
-    monkeypatch.setenv("MAIL_TLS", "true")
-    monkeypatch.setenv("MAIL_SSL", "false")
+def test_build_resend_sender_from_env_success(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RESEND_API_KEY", "key")
     monkeypatch.setenv("CONTACT_RECIPIENT", "recipient@example.com")
 
-    mailer = build_mailer_from_env()
-    assert mailer.contact_recipient == "recipient@example.com"
-    assert mailer.fastmail is not None
+    sender = build_resend_sender_from_env()
+    assert sender.contact_recipient == "recipient@example.com"
 
 
-def test_startup_initializes_mailer_when_none(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("MAIL_USERNAME", "user")
-    monkeypatch.setenv("MAIL_PASSWORD", "pass")
-    monkeypatch.setenv("MAIL_FROM", "no-reply@example.com")
-    monkeypatch.setenv("MAIL_SERVER", "smtp.example.com")
-    monkeypatch.setenv("MAIL_PORT", "587")
-    monkeypatch.setenv("MAIL_TLS", "true")
-    monkeypatch.setenv("MAIL_SSL", "false")
+def test_send_contact_email_runs_sync_client_in_threadpool(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Exercise the non-async code path in [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:24).
+    monkeypatch.setattr(email_delivery.resend, "api_key", None)
+
+    calls: list[dict[str, object]] = []
+
+    class _Emails:
+        @staticmethod
+        def send(payload: dict[str, object]) -> dict[str, object]:
+            calls.append(payload)
+            return {"id": "test"}
+
+    monkeypatch.setattr(email_delivery.resend, "Emails", _Emails)
+
+    sender = email_delivery.ResendEmailSender(
+        api_key="k",
+        contact_recipient="recipient@example.com",
+        from_address="no-reply@resend.dev",
+    )
+
+    # Includes characters that must be escaped.
+    name = "A&B"
+    email = "user@example.com"
+    message = "Line1\nLine2 <tag>"
+
+    import asyncio
+
+    asyncio.run(sender.send_contact_email(name=name, email=email, message=message))
+
+    assert len(calls) == 1
+    payload = calls[0]
+    assert payload["from"] == "no-reply@resend.dev"
+    assert payload["to"] == "recipient@example.com"
+    assert payload["reply_to"] == email
+    assert "A&amp;B" in str(payload["html"])
+    assert "Line2 &lt;tag&gt;" in str(payload["html"])
+
+
+def test_send_contact_email_awaits_async_client(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Exercise the coroutine path in [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:49).
+    calls: list[dict[str, object]] = []
+
+    class _Emails:
+        @staticmethod
+        async def send(payload: dict[str, object]) -> dict[str, object]:
+            calls.append(payload)
+            return {"id": "async"}
+
+    monkeypatch.setattr(email_delivery.resend, "Emails", _Emails)
+
+    sender = email_delivery.ResendEmailSender(
+        api_key="k",
+        contact_recipient="recipient@example.com",
+        from_address="no-reply@resend.dev",
+    )
+
+    import asyncio
+
+    asyncio.run(sender.send_contact_email(name="N", email="e@example.com", message="M"))
+    assert len(calls) == 1
+
+
+def test_startup_initializes_email_sender_when_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RESEND_API_KEY", "key")
     monkeypatch.setenv("CONTACT_RECIPIENT", "recipient@example.com")
 
     app = create_app()
-    assert getattr(app.state, "mailer") is None
+    assert getattr(app.state, "email_sender") is None
 
     with TestClient(app) as client:
         # Trigger at least one request to ensure lifespan is active.
         response = client.get("/")
         assert response.status_code == 200
 
-    assert getattr(app.state, "mailer") is not None
+    assert getattr(app.state, "email_sender") is not None
 
 
-def test_startup_does_not_override_existing_mailer(monkeypatch: pytest.MonkeyPatch) -> None:
-    # If tests or other code set app.state.mailer before startup, startup should not override it.
-    monkeypatch.setenv("MAIL_USERNAME", "user")
-    monkeypatch.setenv("MAIL_PASSWORD", "pass")
-    monkeypatch.setenv("MAIL_FROM", "no-reply@example.com")
-    monkeypatch.setenv("MAIL_SERVER", "smtp.example.com")
-    monkeypatch.setenv("MAIL_PORT", "587")
-    monkeypatch.setenv("MAIL_TLS", "true")
-    monkeypatch.setenv("MAIL_SSL", "false")
+def test_startup_does_not_override_existing_email_sender(monkeypatch: pytest.MonkeyPatch) -> None:
+    # If tests or other code set app.state.email_sender before startup, startup should not override it.
+    monkeypatch.setenv("RESEND_API_KEY", "key")
     monkeypatch.setenv("CONTACT_RECIPIENT", "recipient@example.com")
 
     app = create_app()
     sentinel = object()
-    app.state.mailer = sentinel
+    app.state.email_sender = sentinel
 
     with TestClient(app) as client:
         response = client.get("/")
         assert response.status_code == 200
 
-    assert app.state.mailer is sentinel
+    assert app.state.email_sender is sentinel
 
 
-def test_get_mailer_raises_when_not_configured() -> None:
+def test_get_email_sender_raises_when_not_configured() -> None:
     class _State:
-        mailer = None
+        email_sender = None
 
     class _App:
         state = _State()
@@ -132,5 +142,5 @@ def test_get_mailer_raises_when_not_configured() -> None:
         app = _App()
 
     with pytest.raises(RuntimeError):
-        get_mailer(_Request())
+        get_email_sender(_Request())
 

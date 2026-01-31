@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import Request
 
-from fastapi_stellody.mail import Mailer
+from fastapi_stellody.email_delivery import ResendEmailSender
 from fastapi_stellody.rendering import PageRenderer
 
 
@@ -10,10 +10,10 @@ def get_renderer(request: Request) -> PageRenderer:
     return request.app.state.renderer
 
 
-def get_mailer(request: Request) -> Mailer:
-    mailer = getattr(request.app.state, "mailer", None)
-    if mailer is None:
+def get_email_sender(request: Request) -> ResendEmailSender:
+    sender = getattr(request.app.state, "email_sender", None)
+    if sender is None:
         raise RuntimeError(
-            "Mailer is not configured. Ensure MAIL_* and CONTACT_RECIPIENT environment variables are set."
+            "Email sender is not configured. Ensure RESEND_API_KEY and CONTACT_RECIPIENT environment variables are set."
         )
-    return mailer
+    return sender
