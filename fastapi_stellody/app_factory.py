@@ -21,7 +21,8 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         # Shared email sender (Resend) configured via Render environment variables.
-        # Initialized on startup to avoid import-time failures (tests can override app.state.email_sender).
+        # Initialized on startup to avoid import-time failures (tests can override
+        # app.state.email_sender).
         if getattr(app.state, "email_sender", None) is None:
             app.state.email_sender = build_resend_sender_from_env()
         yield
@@ -32,9 +33,7 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
     # Required: set SESSION_SECRET to a long random value.
     session_secret = os.environ.get("SESSION_SECRET")
     if not session_secret:
-        raise RuntimeError(
-            "SESSION_SECRET must be set (used to sign session cookies)."
-        )
+        raise RuntimeError("SESSION_SECRET must be set (used to sign session cookies).")
     app.add_middleware(
         SessionMiddleware,
         secret_key=session_secret,

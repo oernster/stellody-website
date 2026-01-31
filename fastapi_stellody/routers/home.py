@@ -16,5 +16,10 @@ async def home(request: Request, renderer: PageRenderer = Depends(get_renderer))
         request=request,
         # Homepage SEO title should be explicit and keyword-rich.
         title="Home",
-        og_title="Stellody - AI Music Discovery & Licensing",
+        # NOTE: base.html uses og_title for the document <title>.
+        og_title="Stellody | Spotify Playlist Generator for Local and Streaming Music",
+        meta_description=(
+            "Generate genre-sorted Spotify and local music playlists effortlessly. "
+            "Stellody works with Spotify Free and Premium and local music files."
+        ),
     )

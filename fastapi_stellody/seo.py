@@ -17,7 +17,10 @@ class SeoConfig:
 DEFAULT_SEO_CONFIG = SeoConfig(
     canonical_host="https://stellody.com",
     # Used as the homepage meta description and as a safe fallback for unknown pages.
-    default_description="Stellody - Generate genre-sorted Spotify and local music playlists effortlessly.",
+    default_description=(
+        "Stellody - Generate genre-sorted Spotify and local music "
+        "playlists effortlessly."
+    ),
     default_og_image_path="/static/stellody-options-2.png",
     twitter_site="@stellody",
 )
@@ -40,11 +43,25 @@ def robots_directive_for_path(path: str) -> str | None:
 
 def description_for_path(path: str, *, config: SeoConfig = DEFAULT_SEO_CONFIG) -> str:
     per_page: dict[str, str] = {
-        "/pricing": "Compare Stellody Standard and Pro licenses and choose the right option for your music.",
-        "/standard-license": "Stellody Standard License: simple, affordable music licensing for your projects.",
-        "/pro-license": "Stellody Pro License: expanded rights for professional music usage.",
-        "/demo": "Try a Stellody demo license and see how the purchase flow works end-to-end.",
-        "/why-stellody": "Learn what makes Stellody different and how it helps you license music faster.",
+        "/pricing": (
+            "Compare Stellody Standard and Pro licenses and choose the right option "
+            "for your music."
+        ),
+        "/standard-license": (
+            "Stellody Standard License: simple, affordable music licensing for your "
+            "projects."
+        ),
+        "/pro-license": (
+            "Stellody Pro License: expanded rights for professional music usage."
+        ),
+        "/demo": (
+            "Try a Stellody demo license and see how the purchase flow works "
+            "end-to-end."
+        ),
+        "/why-stellody": (
+            "Learn what makes Stellody different and how it helps you license music "
+            "faster."
+        ),
         "/faq": "Answers to common questions about Stellody music licensing.",
         "/help": "Get help using Stellody and troubleshooting common issues.",
         "/change-log": "See what's new in Stellody.",
@@ -80,7 +97,9 @@ def build_seo_context(
         else description_for_path(path, config=config)
     )
 
-    resolved_robots = meta_robots if meta_robots is not None else robots_directive_for_path(path)
+    resolved_robots = (
+        meta_robots if meta_robots is not None else robots_directive_for_path(path)
+    )
 
     resolved_og_title = og_title if og_title is not None else f"{title} | Stellody"
     resolved_og_description = (
@@ -105,4 +124,3 @@ def build_seo_context(
         "twitter_description": resolved_og_description,
         "twitter_image": resolved_og_image,
     }
-

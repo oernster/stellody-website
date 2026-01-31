@@ -31,7 +31,9 @@ def test_all_python_files_are_at_most_400_lines() -> None:
         if line_count > 400:
             violations.append((line_count, path))
 
-    assert not violations, "Python files must be <= 400 lines. Violations:\n" + "\n".join(
-        f"{count} {path.relative_to(project_root)}" for count, path in sorted(violations, reverse=True)
+    assert (
+        not violations
+    ), "Python files must be <= 400 lines. Violations:\n" + "\n".join(
+        f"{count} {path.relative_to(project_root)}"
+        for count, path in sorted(violations, reverse=True)
     )
-

@@ -39,8 +39,12 @@ async def contact_post(
 
     resolved_message = message if message is not None else msg
     if resolved_message is None:
-        # Match FastAPI's validation semantics while remaining compatible with older clients.
-        raise HTTPException(status_code=422, detail="Field required: message")
+        # Match FastAPI's validation semantics while remaining compatible with older
+        # clients.
+        raise HTTPException(
+            status_code=422,
+            detail="Field required: message",
+        )
 
     try:
         await email_sender.send_contact_email(

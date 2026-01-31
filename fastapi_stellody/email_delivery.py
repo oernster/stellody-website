@@ -62,4 +62,3 @@ def build_resend_sender_from_env() -> ResendEmailSender:
             "Stellody Contact <no-reply@stellody.com>",
         ),
     )
-

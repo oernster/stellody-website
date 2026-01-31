@@ -19,7 +19,9 @@ def _assert_html_title(html: str, expected: str) -> None:
 def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
     cases = (
         # Homepage uses an explicit SEO title (not the generic "Home | Stellody").
-        PageCase("/", "Stellody - AI Music Discovery &amp; Licensing"),
+        PageCase(
+            "/", "Stellody | Spotify Playlist Generator for Local and Streaming Music"
+        ),
         PageCase("/why-stellody", "Why Stellody? | Stellody"),
         PageCase("/pricing", "Pricing | Stellody"),
         PageCase("/pro-license", "Professional License | Stellody"),
@@ -207,22 +209,32 @@ def test_canonical_and_open_graph_tags_are_present(client: TestClient) -> None:
     assert '<link rel="canonical" href="https://stellody.com/pricing"' in html
     assert '<meta property="og:title"' in html
     assert '<meta property="og:description"' in html
-    assert '<meta property="og:image" content="https://stellody.com/static/stellody-options-2.png"' in html
+    assert (
+        '<meta property="og:image" content="https://stellody.com'
+        '/static/stellody-options-2.png"'
+    ) in html
     assert '<meta name="twitter:card" content="summary_large_image"' in html
     assert '<meta name="twitter:site" content="@stellody"' in html
 
 
-def test_homepage_has_keyword_rich_title_and_meta_description(client: TestClient) -> None:
+def test_homepage_has_keyword_rich_title_and_meta_description(
+    client: TestClient,
+) -> None:
     response = client.get("/")
     assert response.status_code == 200
     html = response.text
 
     # Jinja auto-escapes the ampersand in HTML output.
-    assert "<title>Stellody - AI Music Discovery &amp; Licensing</title>" in html
     assert (
-        '<meta name="description" content="Stellody - Generate genre-sorted Spotify and local music playlists effortlessly."'
-        in html
-    )
+        "<title>Stellody | Spotify Playlist Generator for Local and Streaming Music"
+        "</title>"
+    ) in html
+    assert (
+        '<meta name="description" content="Generate genre-sorted Spotify and local '
+        "music playlists effortlessly. Stellody works with Spotify Free and Premium "
+        "and local music files."
+        '"'
+    ) in html
 
 
 def test_cart_and_checkout_are_noindex_nofollow(client: TestClient) -> None:
@@ -268,7 +280,10 @@ def test_seo_helpers_cover_relative_and_non_relative_paths(client: TestClient) -
 
     assert robots_directive_for_path("/pricing") is None
     assert robots_directive_for_path("/cart") == "noindex,nofollow"
-    assert absolute_url("pricing", config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+    assert (
+        absolute_url("pricing", config=DEFAULT_SEO_CONFIG)
+        == "https://stellody.com/pricing"
+    )
 
     class _Url:
         path = "pricing"
@@ -278,12 +293,20 @@ def test_seo_helpers_cover_relative_and_non_relative_paths(client: TestClient) -
 
     # Cover canonical_url() branch that normal Starlette requests don't hit
     # (request.url.path normally always starts with "/").
-    assert canonical_url(request=_Req(), config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+    assert (
+        canonical_url(request=_Req(), config=DEFAULT_SEO_CONFIG)
+        == "https://stellody.com/pricing"
+    )
 
     response = client.get("/pricing")
-    ctx = build_seo_context(request=response.request, title="Pricing", config=DEFAULT_SEO_CONFIG)
+    ctx = build_seo_context(
+        request=response.request, title="Pricing", config=DEFAULT_SEO_CONFIG
+    )
     assert ctx["canonical_url"] == "https://stellody.com/pricing"
-    assert canonical_url(request=response.request, config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+    assert (
+        canonical_url(request=response.request, config=DEFAULT_SEO_CONFIG)
+        == "https://stellody.com/pricing"
+    )
 
 
 def test_sitemap_xml_covers_dedupe_and_exclusion_branches(

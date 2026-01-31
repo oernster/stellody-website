@@ -13,7 +13,5 @@ def get_renderer(request: Request) -> PageRenderer:
 def get_email_sender(request: Request) -> ResendEmailSender:
     sender = getattr(request.app.state, "email_sender", None)
     if sender is None:
-        raise RuntimeError(
-            "Email sender is not configured. Ensure RESEND_API_KEY and CONTACT_RECIPIENT environment variables are set."
-        )
+        raise RuntimeError("Email sender is not configured.")
     return sender

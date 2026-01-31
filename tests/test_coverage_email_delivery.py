@@ -8,7 +8,10 @@ from fastapi.testclient import TestClient
 from fastapi_stellody.app_factory import create_app
 from fastapi_stellody.dependencies import get_email_sender
 import fastapi_stellody.email_delivery as email_delivery
-from fastapi_stellody.email_delivery import _get_env_required, build_resend_sender_from_env
+from fastapi_stellody.email_delivery import (
+    _get_env_required,
+    build_resend_sender_from_env,
+)
 
 
 def test_app_module_exports_asgi_app() -> None:
@@ -38,8 +41,11 @@ def test_build_resend_sender_from_env_success(monkeypatch: pytest.MonkeyPatch) -
     assert sender.contact_recipient == "recipient@example.com"
 
 
-def test_send_contact_email_runs_sync_client_in_threadpool(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Exercise the non-async code path in [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:24).
+def test_send_contact_email_runs_sync_client_in_threadpool(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Exercise the non-async code path in
+    # [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:24).
     monkeypatch.setattr(email_delivery.resend, "api_key", None)
 
     calls: list[dict[str, object]] = []
@@ -76,8 +82,11 @@ def test_send_contact_email_runs_sync_client_in_threadpool(monkeypatch: pytest.M
     assert "Line2 &lt;tag&gt;" in str(payload["html"])
 
 
-def test_send_contact_email_awaits_async_client(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Exercise the coroutine path in [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:49).
+def test_send_contact_email_awaits_async_client(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Exercise the coroutine path in
+    # [`ResendEmailSender.send_contact_email()`](fastapi_stellody/email_delivery.py:49).
     calls: list[dict[str, object]] = []
 
     class _Emails:
@@ -100,7 +109,9 @@ def test_send_contact_email_awaits_async_client(monkeypatch: pytest.MonkeyPatch)
     assert len(calls) == 1
 
 
-def test_startup_initializes_email_sender_when_none(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_startup_initializes_email_sender_when_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("RESEND_API_KEY", "key")
     monkeypatch.setenv("CONTACT_RECIPIENT", "recipient@example.com")
 
@@ -115,8 +126,11 @@ def test_startup_initializes_email_sender_when_none(monkeypatch: pytest.MonkeyPa
     assert getattr(app.state, "email_sender") is not None
 
 
-def test_startup_does_not_override_existing_email_sender(monkeypatch: pytest.MonkeyPatch) -> None:
-    # If tests or other code set app.state.email_sender before startup, startup should not override it.
+def test_startup_does_not_override_existing_email_sender(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # If tests or other code set app.state.email_sender before startup, startup
+    # should not override it.
     monkeypatch.setenv("RESEND_API_KEY", "key")
     monkeypatch.setenv("CONTACT_RECIPIENT", "recipient@example.com")
 
@@ -143,4 +157,3 @@ def test_get_email_sender_raises_when_not_configured() -> None:
 
     with pytest.raises(RuntimeError):
         get_email_sender(_Request())
-
