@@ -51,7 +51,7 @@ python site.py --reload
 
 Then open:
 
-- http://127.0.0.1:8000
+- http://127.0.0.1:8004
 
 ### Session configuration (cart)
 

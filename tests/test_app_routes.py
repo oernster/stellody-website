@@ -16,6 +16,10 @@ def _assert_html_title(html: str, expected: str) -> None:
     assert f"<title>{expected}</title>" in html
 
 
+def _assert_meta_description_present(html: str) -> None:
+    assert '<meta name="description"' in html
+
+
 def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
     cases = (
         # Homepage uses an explicit SEO title (not the generic "Home | Stellody").
@@ -39,6 +43,7 @@ def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
         response = client.get(case.path)
         assert response.status_code == 200
         _assert_html_title(response.text, case.expected_title)
+        _assert_meta_description_present(response.text)
 
 
 def test_cart_flow_add_then_replace_then_clear(client: TestClient) -> None:

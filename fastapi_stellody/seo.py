@@ -9,6 +9,7 @@ from fastapi import Request
 class SeoConfig:
     canonical_host: str
     default_description: str
+    homepage_description: str
     default_og_image_path: str
     twitter_site: str
     twitter_card: str = "summary_large_image"
@@ -16,8 +17,10 @@ class SeoConfig:
 
 DEFAULT_SEO_CONFIG = SeoConfig(
     canonical_host="https://stellody.com",
-    # Used as the homepage meta description and as a safe fallback for unknown pages.
-    default_description=(
+    # Used as a safe fallback for unknown pages.
+    default_description="Stellody - Playlist generation software for organizing music.",
+    # Used as the default for the homepage when a route does not override it.
+    homepage_description=(
         "Stellody - Generate genre-sorted Spotify and local music "
         "playlists effortlessly."
     ),
@@ -66,7 +69,7 @@ def description_for_path(path: str, *, config: SeoConfig = DEFAULT_SEO_CONFIG) -
         "/help": "Get help using Stellody and troubleshooting common issues.",
         "/change-log": "See what's new in Stellody.",
         "/contact": "Contact the Stellody team.",
-        "/": config.default_description,
+        "/": config.homepage_description,
     }
     return per_page.get(path, config.default_description)
 

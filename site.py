@@ -24,8 +24,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--port",
         type=int,
-        default=8000,
-        help="Bind port (default: 8000)",
+        default=8004,
+        help="Bind port (default: 8004)",
     )
     parser.add_argument(
         "--reload",

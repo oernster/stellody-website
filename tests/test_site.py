@@ -39,7 +39,7 @@ def test_build_parser_has_expected_defaults() -> None:
     args = parser.parse_args([])
 
     assert args.host == "127.0.0.1"
-    assert args.port == 8000
+    assert args.port == 8004
     assert args.reload is False
 
 
