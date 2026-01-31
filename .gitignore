@@ -11,7 +11,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
@@ -25,6 +24,15 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Ignore all files in downloads/...
+fastapi_stellody/downloads/*
+
+# ...except for specific binary types tracked with Git LFS
+!fastapi_stellody/downloads/*.dmg
+!fastapi_stellody/downloads/*.exe
+!fastapi_stellody/downloads/*.flatpak
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
