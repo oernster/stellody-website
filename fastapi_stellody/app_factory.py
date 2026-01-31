@@ -12,6 +12,7 @@ from fastapi_stellody.email_delivery import build_resend_sender_from_env
 from fastapi_stellody.paths import AppPaths, default_paths
 from fastapi_stellody.rendering import JinjaPageRenderer
 from fastapi_stellody.routers import contact, downloads, home, pages, store
+from fastapi_stellody.routers import legacy_redirects
 from fastapi_stellody.routers import seo_assets
 
 
@@ -53,6 +54,8 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
     app.state.email_sender = None
 
     app.include_router(home.router)
+    # Legacy routes that should remain valid for external links and browser defaults.
+    app.include_router(legacy_redirects.router)
     app.include_router(pages.router)
     app.include_router(contact.router)
     app.include_router(store.router)

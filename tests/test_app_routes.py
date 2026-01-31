@@ -206,6 +206,19 @@ def test_static_assets_are_served(client: TestClient) -> None:
     assert "text/css" in response.headers.get("content-type", "")
 
 
+def test_legacy_routes_redirect_as_expected(client: TestClient) -> None:
+    # Browsers may request this automatically.
+    response = client.get("/favicon.ico", follow_redirects=False)
+    assert response.status_code == 308
+    assert response.headers["location"] == "/static/favicon.ico"
+
+    # Backwards-compatible product link.
+    for path in ("/product/stellody", "/product/stellody/"):
+        response = client.get(path, follow_redirects=False)
+        assert response.status_code == 308
+        assert response.headers["location"] == "/pricing"
+
+
 def test_download_redirects_to_github_release_assets(client: TestClient) -> None:
     base = "https://github.com/oernster/stellody-website/releases/download/v1.3.0"
 
