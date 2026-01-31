@@ -4,6 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }} | Stellody</title>
+
+    {# SEO: description + canonical #}
+    {% if meta_description %}
+    <meta name="description" content="{{ meta_description }}" />
+    {% endif %}
+    {% if canonical_url %}
+    <link rel="canonical" href="{{ canonical_url }}" />
+    {% endif %}
+
+    {# SEO: robots directives (only set when explicitly needed) #}
+    {% if meta_robots %}
+    <meta name="robots" content="{{ meta_robots }}" />
+    {% endif %}
+
+    {# Open Graph #}
+    {% if og_title %}<meta property="og:title" content="{{ og_title }}" />{% endif %}
+    {% if og_description %}<meta property="og:description" content="{{ og_description }}" />{% endif %}
+    {% if og_url %}<meta property="og:url" content="{{ og_url }}" />{% endif %}
+    <meta property="og:type" content="website" />
+    {% if og_image %}<meta property="og:image" content="{{ og_image }}" />{% endif %}
+
+    {# Twitter Cards #}
+    {% if twitter_card %}<meta name="twitter:card" content="{{ twitter_card }}" />{% endif %}
+    {% if twitter_site %}<meta name="twitter:site" content="{{ twitter_site }}" />{% endif %}
+    {% if twitter_title %}<meta name="twitter:title" content="{{ twitter_title }}" />{% endif %}
+    {% if twitter_description %}<meta name="twitter:description" content="{{ twitter_description }}" />{% endif %}
+    {% if twitter_image %}<meta name="twitter:image" content="{{ twitter_image }}" />{% endif %}
+
     <link rel="icon" href="/static/favicon.ico" />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>

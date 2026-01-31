@@ -196,3 +196,44 @@ def test_static_assets_are_served(client: TestClient) -> None:
     assert response.status_code == 200
     # Keep assertion minimal and resilient.
     assert "text/css" in response.headers.get("content-type", "")
+
+
+def test_canonical_and_open_graph_tags_are_present(client: TestClient) -> None:
+    response = client.get("/pricing")
+    assert response.status_code == 200
+    html = response.text
+
+    assert '<link rel="canonical" href="https://stellody.com/pricing"' in html
+    assert '<meta property="og:title"' in html
+    assert '<meta property="og:description"' in html
+    assert '<meta property="og:image" content="https://stellody.com/static/stellody-options-2.png"' in html
+    assert '<meta name="twitter:card" content="summary_large_image"' in html
+    assert '<meta name="twitter:site" content="@stellody"' in html
+
+
+def test_cart_and_checkout_are_noindex_nofollow(client: TestClient) -> None:
+    for path in ("/cart", "/checkout"):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert '<meta name="robots" content="noindex,nofollow"' in response.text
+
+
+def test_robots_txt_and_sitemap_xml(client: TestClient) -> None:
+    response = client.get("/robots.txt")
+    assert response.status_code == 200
+    assert "text/plain" in response.headers.get("content-type", "")
+    assert "User-agent: *" in response.text
+    assert "Disallow: /cart" in response.text
+    assert "Disallow: /checkout" in response.text
+    assert "Sitemap: https://stellody.com/sitemap.xml" in response.text
+
+    response = client.get("/sitemap.xml")
+    assert response.status_code == 200
+    assert "application/xml" in response.headers.get("content-type", "")
+    xml = response.text
+
+    assert "https://stellody.com/" in xml
+    assert "https://stellody.com/pricing" in xml
+    assert "https://stellody.com/contact" in xml
+    assert "https://stellody.com/cart" not in xml
+    assert "https://stellody.com/checkout" not in xml

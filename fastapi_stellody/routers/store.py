@@ -53,6 +53,7 @@ async def cart(request: Request, renderer: PageRenderer = Depends(get_renderer))
         template_name="cart.html",
         request=request,
         title="Cart",
+        meta_robots="noindex,nofollow",
         selected=selected,
     )
 
@@ -80,4 +81,5 @@ async def checkout(request: Request, renderer: PageRenderer = Depends(get_render
         template_name="checkout.html",
         request=request,
         title="Checkout",
+        meta_robots="noindex,nofollow",
     )
