@@ -23,6 +23,7 @@ PAGES = (
     Page("/pricing", "pricing.html", "Pricing"),
     Page("/pro-license", "pro_license.html", "Professional License"),
     Page("/standard-license", "standard_license.html", "Standard License"),
+    Page("/upgrade-to-pro", "upgrade_to_pro.html", "Upgrade to Pro"),
     Page("/help", "help.html", "Help!"),
     Page("/faq", "faq.html", "FAQ"),
     Page("/change-log", "change_log.html", "Change-log"),

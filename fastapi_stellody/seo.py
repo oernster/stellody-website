@@ -57,6 +57,9 @@ def description_for_path(path: str, *, config: SeoConfig = DEFAULT_SEO_CONFIG) -
         "/pro-license": (
             "Stellody Pro License: expanded rights for professional music usage."
         ),
+        "/upgrade-to-pro": (
+            "Upgrade from Stellody Standard to Pro and unlock Spotify playlist sourcing."
+        ),
         "/demo": (
             "Try a Stellody demo license and see how the purchase flow works "
             "end-to-end."

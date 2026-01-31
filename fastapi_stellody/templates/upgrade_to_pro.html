@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <figure class="media" aria-label="Stellody logo">
+      <img
+        src="/static/favicon.ico"
+        alt="Stellody logo"
+        style="width: 200px; height: auto"
+      />
+    </figure>
+
+    <h1>UPGRADE TO PRO LICENSE</h1>
+    <p>
+      Upgrade from Standard to Pro for 1 year.
+    </p>
+    <p>
+      <strong>Pro unlocks sourcing from Spotify playlists</strong> (as well as your local music
+      library), organised by genre.
+    </p>
+    <p class="muted">£25 · Upgrade</p>
+    <p>All licenses usually issued within a few hours; occasionally up to 1-2 business days.</p>
+
+    <div class="button-row button-row--equal center" style="margin-top: 14px">
+      <form action="/add-to-cart" method="post">
+        <input type="hidden" name="license_type" value="upgrade_pro" />
+        <button class="button button--primary" type="submit">Add to Cart</button>
+      </form>
+      <a class="button" href="/cart">View Cart</a>
+    </div>
+
+    <h2>Need the full Pro license?</h2>
+    <p>
+      If you don't already have Standard, buy the full Pro license instead.
+    </p>
+
+    <div class="button-row center" style="margin-top: 14px">
+      <a class="button" href="/pro-license">View Pro License</a>
+      <a class="button" href="/standard-license">View Standard License</a>
+    </div>
+  </div>
+{% endblock %}
+

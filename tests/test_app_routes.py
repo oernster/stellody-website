@@ -30,6 +30,7 @@ def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
         PageCase("/pricing", "Pricing | Stellody"),
         PageCase("/pro-license", "Professional License | Stellody"),
         PageCase("/standard-license", "Standard License | Stellody"),
+        PageCase("/upgrade-to-pro", "Upgrade to Pro | Stellody"),
         PageCase("/help", "Help! | Stellody"),
         PageCase("/faq", "FAQ | Stellody"),
         PageCase("/change-log", "Change-log | Stellody"),
@@ -78,6 +79,21 @@ def test_cart_flow_add_then_replace_then_clear(client: TestClient) -> None:
     assert response.status_code == 200
     assert "Standard License" in response.text
     assert "EXJ35PLE2CTF2" in response.text
+
+    # Replace with Pro.
+    response = client.post(
+        "/add-to-cart",
+        data={"license_type": "upgrade_pro"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/cart"
+
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "Upgrade to Pro License" in response.text
+    assert "2C6KDLXRWUBZJ" in response.text
+    assert "Standard License" not in response.text
 
     # Replace with Pro.
     response = client.post(

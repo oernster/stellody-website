@@ -12,7 +12,7 @@ from fastapi_stellody.rendering import PageRenderer
 router = APIRouter()
 
 
-LicenseType = Literal["standard", "pro"]
+LicenseType = Literal["standard", "pro", "upgrade_pro"]
 
 
 @dataclass(frozen=True)
@@ -29,6 +29,12 @@ LICENSE_OPTIONS: dict[LicenseType, LicenseOption] = {
         name="Standard License",
         price_gbp=25,
         paypal_url="https://www.paypal.com/ncp/payment/EXJ35PLE2CTF2",
+    ),
+    "upgrade_pro": LicenseOption(
+        key="upgrade_pro",
+        name="Upgrade to Pro License",
+        price_gbp=25,
+        paypal_url="https://www.paypal.com/ncp/payment/2C6KDLXRWUBZJ",
     ),
     "pro": LicenseOption(
         key="pro",
