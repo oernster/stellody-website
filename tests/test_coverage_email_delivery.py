@@ -55,7 +55,7 @@ def test_send_contact_email_runs_sync_client_in_threadpool(monkeypatch: pytest.M
     sender = email_delivery.ResendEmailSender(
         api_key="k",
         contact_recipient="recipient@example.com",
-        from_address="no-reply@resend.dev",
+        from_address="from": "Stellody Contact <no-reply@stellody.com>",
     )
 
     # Includes characters that must be escaped.
@@ -69,7 +69,7 @@ def test_send_contact_email_runs_sync_client_in_threadpool(monkeypatch: pytest.M
 
     assert len(calls) == 1
     payload = calls[0]
-    assert payload["from"] == "no-reply@resend.dev"
+    assert payload["from"] == "Stellody Contact <no-reply@stellody.com>"
     assert payload["to"] == "recipient@example.com"
     assert payload["reply_to"] == email
     assert "A&amp;B" in str(payload["html"])
