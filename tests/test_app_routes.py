@@ -219,8 +219,13 @@ def test_legacy_routes_redirect_as_expected(client: TestClient) -> None:
         assert response.headers["location"] == "/pricing"
 
 
-def test_download_redirects_to_github_release_assets(client: TestClient) -> None:
-    base = "https://github.com/oernster/stellody-website/releases/download/v1.3.0"
+def test_download_redirects_to_github_release_assets(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Ensure a developer/CI environment variable doesn't override the deterministic default.
+    monkeypatch.delenv("TAG_RELEASED_VERSION", raising=False)
+
+    base = "https://github.com/oernster/stellody-website/releases/download/v1.4.0"
 
     cases = (
         ("/downloads/stellody.dmg", f"{base}/stellody.dmg"),

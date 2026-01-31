@@ -21,6 +21,13 @@ Pages are implemented as small, focused routers (see [`fastapi_stellody/routers/
 - Simple contact form handler (placeholder redirect)
 - Automated tests with 100% Python coverage via [`pytest.ini`](pytest.ini:1) / [`.coveragerc`](.coveragerc:1)
 
+### UI conventions
+
+- Use `.button` for page CTAs (links and `<button>` elements). All `.button` instances share the same
+  default styling/hover/focus behavior site-wide.
+- Use `.nav-link` for header navigation items. The header Demo CTA uses `.nav-link--cta` and is
+  intentionally styled separately from `.button`.
+
 ---
 
 ## Local Development
@@ -68,7 +75,7 @@ Installer artifacts are not stored in this repository. Instead, the site exposes
 `/downloads/*` that redirect (HTTP 307) directly to GitHub Release assets.
 
 The release tag is controlled by `TAG_RELEASED_VERSION` (recommended for Render). If unset, the
-application defaults deterministically to `v1.3.0`.
+application defaults deterministically to `v1.4.0`.
 
 Examples:
 
