@@ -9,7 +9,7 @@
       <p><strong>{{ selected.name }}</strong></p>
       <p class="muted">£{{ selected.price_gbp }} · 1 year</p>
 
-      <div class="button-row" style="margin-top: 14px">
+      <div class="button-row button-row--equal" style="margin-top: 14px">
         <a
           class="button button--primary"
           href="{{ selected.paypal_url }}"
@@ -28,7 +28,7 @@
     </div>
   {% else %}
     <p>Your cart is currently empty.</p>
-    <div class="button-row" style="margin-top: 14px">
+    <div class="button-row button-row--equal" style="margin-top: 14px">
       <a class="button button--primary" href="/pricing">View licenses</a>
     </div>
   {% endif %}
