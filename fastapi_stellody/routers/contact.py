@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import EmailStr
 
@@ -26,7 +26,9 @@ async def contact_get(request: Request, renderer: PageRenderer = Depends(get_ren
 async def contact_post(
     name: str = Form(...),
     email: EmailStr = Form(...),
-    message: str = Form(...),
+    message: str | None = Form(None),
+    # Backwards-compatibility for older templates/clients.
+    msg: str | None = Form(None),
     email_sender: ResendEmailSender = Depends(get_email_sender),
 ):
     """Send contact form submission via Resend.
@@ -35,11 +37,16 @@ async def contact_post(
     - Reply-To is set to the submitter's email.
     """
 
+    resolved_message = message if message is not None else msg
+    if resolved_message is None:
+        # Match FastAPI's validation semantics while remaining compatible with older clients.
+        raise HTTPException(status_code=422, detail="Field required: message")
+
     try:
         await email_sender.send_contact_email(
             name=name,
             email=str(email),
-            message=message,
+            message=resolved_message,
         )
     except Exception as exc:
         # Do not log message contents.

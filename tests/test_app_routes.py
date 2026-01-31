@@ -50,6 +50,19 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
     assert response.status_code == 303
     assert response.headers["location"] == "/contact?sent=1"
 
+    # Backwards-compatible field name.
+    response = client.post(
+        "/contact",
+        data={
+            "name": "Test User",
+            "email": "test@example.com",
+            "msg": "Hello",
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/contact?sent=1"
+
     # Exercise the handler body for full coverage.
     response = client.post(
         "/contact",
@@ -95,6 +108,18 @@ def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
     )
     assert response.status_code == 200
     assert "Unable to send right now" in response.text
+
+
+def test_contact_post_missing_message_returns_422(client: TestClient) -> None:
+    response = client.post(
+        "/contact",
+        data={
+            "name": "Test User",
+            "email": "test@example.com",
+        },
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
 
 
 def test_static_assets_are_served(client: TestClient) -> None:
