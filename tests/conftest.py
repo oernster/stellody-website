@@ -19,6 +19,7 @@ def client() -> TestClient:
     # Ensure app startup can build email sender config in tests (values are placeholders).
     os.environ.setdefault("RESEND_API_KEY", "test")
     os.environ.setdefault("CONTACT_RECIPIENT", "recipient@example.com")
+    os.environ.setdefault("SESSION_SECRET", "test-session-secret")
 
     app = create_app()
 

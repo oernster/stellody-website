@@ -2,6 +2,35 @@
 
 {% block content %}
   <h1>Cart</h1>
-  <p>Your cart is currently empty.</p>
+
+  {% if selected %}
+    <div class="card">
+      <h2>Selected license</h2>
+      <p><strong>{{ selected.name }}</strong></p>
+      <p class="muted">£{{ selected.price_gbp }} · 1 year</p>
+
+      <div class="button-row" style="margin-top: 14px">
+        <a
+          class="button button--primary"
+          href="{{ selected.paypal_url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Pay with PayPal
+        </a>
+
+        <form action="/cart/clear" method="post">
+          <button class="button" type="submit">Clear cart</button>
+        </form>
+
+        <a class="button" href="/pricing">Back to pricing</a>
+      </div>
+    </div>
+  {% else %}
+    <p>Your cart is currently empty.</p>
+    <div class="button-row" style="margin-top: 14px">
+      <a class="button button--primary" href="/pricing">View licenses</a>
+    </div>
+  {% endif %}
 {% endblock %}
 

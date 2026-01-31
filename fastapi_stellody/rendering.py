@@ -9,7 +9,7 @@ from starlette.responses import Response
 
 class PageRenderer(Protocol):
     def render_page(
-        self, *, template_name: str, request: Request, title: str
+        self, *, template_name: str, request: Request, title: str, **context: object
     ) -> Response:
         """Render an HTML page."""
 
@@ -19,7 +19,7 @@ class JinjaPageRenderer:
     templates: object
 
     def render_page(
-        self, *, template_name: str, request: Request, title: str
+        self, *, template_name: str, request: Request, title: str, **context: object
     ) -> Response:
         # Starlette >=0.36 expects TemplateResponse(request, name, context)
         # (older TemplateResponse(name, context) is deprecated).
@@ -30,5 +30,6 @@ class JinjaPageRenderer:
                 "title": title,
                 # Make query params available in templates (e.g. ?sent=1 / ?error=1).
                 "request": request,
+                **context,
             },
         )

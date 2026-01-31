@@ -52,6 +52,15 @@ Then open:
 
 - http://127.0.0.1:8000
 
+### Session configuration (cart)
+
+The cart uses cookie-backed sessions via Starlette's session middleware. For local development you can rely
+on a default, but for production set a strong secret:
+
+```bash
+set SESSION_SECRET=replace-with-a-long-random-value
+```
+
 ### Alternate: run Uvicorn directly
 
 ```bash

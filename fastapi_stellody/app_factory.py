@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
 from fastapi_stellody.email_delivery import build_resend_sender_from_env
 from fastapi_stellody.paths import AppPaths, default_paths
@@ -24,6 +26,19 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
         yield
 
     app = FastAPI(title="Stellody Reimagined Multi-Page", lifespan=lifespan)
+
+    # Cookie-backed session support (used for the simple cart flow).
+    # Required: set SESSION_SECRET to a long random value.
+    session_secret = os.environ.get("SESSION_SECRET")
+    if not session_secret:
+        raise RuntimeError(
+            "SESSION_SECRET must be set (used to sign session cookies)."
+        )
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=session_secret,
+        same_site="lax",
+    )
 
     app.mount(
         "/static",

@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from fastapi.testclient import TestClient
+import pytest
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,74 @@ def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
         response = client.get(case.path)
         assert response.status_code == 200
         _assert_html_title(response.text, case.expected_title)
+
+
+def test_cart_flow_add_then_replace_then_clear(client: TestClient) -> None:
+    # Starts empty.
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "currently empty" in response.text
+
+    # Invalid license types should be ignored (still redirects, but cart stays empty).
+    response = client.post(
+        "/add-to-cart",
+        data={"license_type": "invalid"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/cart"
+
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "currently empty" in response.text
+
+    # Add Standard.
+    response = client.post(
+        "/add-to-cart",
+        data={"license_type": "standard"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/cart"
+
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "Standard License" in response.text
+    assert "EXJ35PLE2CTF2" in response.text
+
+    # Replace with Pro.
+    response = client.post(
+        "/add-to-cart",
+        data={"license_type": "pro"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert response.headers["location"] == "/cart"
+
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "Pro License" in response.text
+    assert "AQRY5CDP4Z344" in response.text
+    assert "Standard License" not in response.text
+
+    # Clear.
+    response = client.post("/cart/clear", follow_redirects=False)
+    assert response.status_code == 303
+    assert response.headers["location"] == "/cart"
+
+    response = client.get("/cart")
+    assert response.status_code == 200
+    assert "currently empty" in response.text
+
+
+def test_session_secret_is_required(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Ensure we cover the startup validation branch.
+    monkeypatch.delenv("SESSION_SECRET", raising=False)
+
+    from fastapi_stellody.app_factory import create_app
+
+    with pytest.raises(RuntimeError, match=r"SESSION_SECRET must be set"):
+        create_app()
 
 
 def test_contact_post_redirects_to_home(client: TestClient) -> None:
