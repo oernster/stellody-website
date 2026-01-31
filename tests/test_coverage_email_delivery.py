@@ -91,7 +91,7 @@ def test_send_contact_email_awaits_async_client(monkeypatch: pytest.MonkeyPatch)
     sender = email_delivery.ResendEmailSender(
         api_key="k",
         contact_recipient="recipient@example.com",
-        from_address="no-reply@resend.dev",
+        from_address="Stellody Contact <no-reply@stellody.com>",
     )
 
     import asyncio
