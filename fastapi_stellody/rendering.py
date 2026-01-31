@@ -21,11 +21,12 @@ class JinjaPageRenderer:
     def render_page(
         self, *, template_name: str, request: Request, title: str
     ) -> Response:
-        # Jinja2Templates has TemplateResponse(template, context)
+        # Starlette >=0.36 expects TemplateResponse(request, name, context)
+        # (older TemplateResponse(name, context) is deprecated).
         return self.templates.TemplateResponse(
+            request,
             template_name,
             {
-                "request": request,
                 "title": title,
             },
         )
