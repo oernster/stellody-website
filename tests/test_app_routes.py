@@ -13,23 +13,24 @@ class PageCase:
 
 
 def _assert_html_title(html: str, expected: str) -> None:
-    assert f"<title>{expected} | Stellody</title>" in html
+    assert f"<title>{expected}</title>" in html
 
 
 def test_all_html_pages_render_with_expected_titles(client: TestClient) -> None:
     cases = (
-        PageCase("/", "Home"),
-        PageCase("/why-stellody", "Why Stellody?"),
-        PageCase("/pricing", "Pricing"),
-        PageCase("/pro-license", "Professional License"),
-        PageCase("/standard-license", "Standard License"),
-        PageCase("/help", "Help!"),
-        PageCase("/faq", "FAQ"),
-        PageCase("/change-log", "Change-log"),
-        PageCase("/contact", "Contact"),
-        PageCase("/demo", "Demo License"),
-        PageCase("/cart", "Cart"),
-        PageCase("/checkout", "Checkout"),
+        # Homepage uses an explicit SEO title (not the generic "Home | Stellody").
+        PageCase("/", "Stellody - AI Music Discovery &amp; Licensing"),
+        PageCase("/why-stellody", "Why Stellody? | Stellody"),
+        PageCase("/pricing", "Pricing | Stellody"),
+        PageCase("/pro-license", "Professional License | Stellody"),
+        PageCase("/standard-license", "Standard License | Stellody"),
+        PageCase("/help", "Help! | Stellody"),
+        PageCase("/faq", "FAQ | Stellody"),
+        PageCase("/change-log", "Change-log | Stellody"),
+        PageCase("/contact", "Contact | Stellody"),
+        PageCase("/demo", "Demo License | Stellody"),
+        PageCase("/cart", "Cart | Stellody"),
+        PageCase("/checkout", "Checkout | Stellody"),
     )
 
     for case in cases:
@@ -143,7 +144,7 @@ def test_contact_post_redirects_to_home(client: TestClient) -> None:
         follow_redirects=True,
     )
     assert response.status_code == 200
-    _assert_html_title(response.text, "Contact")
+    _assert_html_title(response.text, "Contact | Stellody")
     assert "Thanks" in response.text
 
 
@@ -211,6 +212,19 @@ def test_canonical_and_open_graph_tags_are_present(client: TestClient) -> None:
     assert '<meta name="twitter:site" content="@stellody"' in html
 
 
+def test_homepage_has_keyword_rich_title_and_meta_description(client: TestClient) -> None:
+    response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+
+    # Jinja auto-escapes the ampersand in HTML output.
+    assert "<title>Stellody - AI Music Discovery &amp; Licensing</title>" in html
+    assert (
+        '<meta name="description" content="Stellody - Generate genre-sorted Spotify and local music playlists effortlessly."'
+        in html
+    )
+
+
 def test_cart_and_checkout_are_noindex_nofollow(client: TestClient) -> None:
     for path in ("/cart", "/checkout"):
         response = client.get(path)
@@ -232,8 +246,67 @@ def test_robots_txt_and_sitemap_xml(client: TestClient) -> None:
     assert "application/xml" in response.headers.get("content-type", "")
     xml = response.text
 
+    # Ensures sitemap de-dupe logic and cart/checkout exclusion branches are exercised.
+    assert "https://stellody.com/checkout" not in xml
+
     assert "https://stellody.com/" in xml
     assert "https://stellody.com/pricing" in xml
     assert "https://stellody.com/contact" in xml
     assert "https://stellody.com/cart" not in xml
     assert "https://stellody.com/checkout" not in xml
+
+
+def test_seo_helpers_cover_relative_and_non_relative_paths(client: TestClient) -> None:
+    # Direct function coverage for branches that aren't hit via normal routing.
+    from fastapi_stellody.seo import (
+        DEFAULT_SEO_CONFIG,
+        absolute_url,
+        build_seo_context,
+        canonical_url,
+        robots_directive_for_path,
+    )
+
+    assert robots_directive_for_path("/pricing") is None
+    assert robots_directive_for_path("/cart") == "noindex,nofollow"
+    assert absolute_url("pricing", config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+
+    class _Url:
+        path = "pricing"
+
+    class _Req:
+        url = _Url()
+
+    # Cover canonical_url() branch that normal Starlette requests don't hit
+    # (request.url.path normally always starts with "/").
+    assert canonical_url(request=_Req(), config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+
+    response = client.get("/pricing")
+    ctx = build_seo_context(request=response.request, title="Pricing", config=DEFAULT_SEO_CONFIG)
+    assert ctx["canonical_url"] == "https://stellody.com/pricing"
+    assert canonical_url(request=response.request, config=DEFAULT_SEO_CONFIG) == "https://stellody.com/pricing"
+
+
+def test_sitemap_xml_covers_dedupe_and_exclusion_branches(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The sitemap handler has internal de-dupe + exclusion branches.
+    # Patch PAGES to force a duplicate and a transactional page.
+    from fastapi_stellody.routers import pages as pages_module
+
+    Page = pages_module.Page
+    monkeypatch.setattr(
+        pages_module,
+        "PAGES",
+        (
+            Page("/pricing", "pricing.html", "Pricing"),
+            Page("/pricing", "pricing.html", "Pricing"),
+            Page("/cart", "cart.html", "Cart"),
+        ),
+    )
+
+    response = client.get("/sitemap.xml")
+    assert response.status_code == 200
+    xml = response.text
+
+    assert xml.count("https://stellody.com/pricing") == 1
+    assert "https://stellody.com/cart" not in xml

@@ -12,5 +12,9 @@ router = APIRouter()
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, renderer: PageRenderer = Depends(get_renderer)):
     return renderer.render_page(
-        template_name="home.html", request=request, title="Home"
+        template_name="home.html",
+        request=request,
+        # Homepage SEO title should be explicit and keyword-rich.
+        title="Home",
+        og_title="Stellody - AI Music Discovery & Licensing",
     )

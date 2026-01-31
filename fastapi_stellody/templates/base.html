@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ title }} | Stellody</title>
+    {#
+      Prefer the SEO-computed title for the document title so routes can override
+      homepage wording without duplicating the "| Stellody" suffix.
+    #}
+    <title>{{ og_title if og_title else (title ~ ' | Stellody') }}</title>
 
     {# SEO: description + canonical #}
     {% if meta_description %}

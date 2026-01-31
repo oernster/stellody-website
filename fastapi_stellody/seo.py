@@ -16,7 +16,8 @@ class SeoConfig:
 
 DEFAULT_SEO_CONFIG = SeoConfig(
     canonical_host="https://stellody.com",
-    default_description="AI-powered music licensing and discovery with Stellody.",
+    # Used as the homepage meta description and as a safe fallback for unknown pages.
+    default_description="Stellody - Generate genre-sorted Spotify and local music playlists effortlessly.",
     default_og_image_path="/static/stellody-options-2.png",
     twitter_site="@stellody",
 )
