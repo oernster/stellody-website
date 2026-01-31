@@ -1,0 +1,8 @@
+## Render uses this file for Python builds by default.
+## Keep this in sync with fastapi_stellody/requirements.txt.
+
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+
