@@ -327,11 +327,10 @@ def test_robots_txt_and_sitemap_xml(client: TestClient) -> None:
     # Ensures sitemap de-dupe logic and cart/checkout exclusion branches are exercised.
     assert "https://stellody.com/checkout" not in xml
 
-    assert "https://stellody.com/" in xml
-    assert "https://stellody.com/pricing" in xml
-    assert "https://stellody.com/contact" in xml
-    assert "https://stellody.com/cart" not in xml
-    assert "https://stellody.com/checkout" not in xml
+    for url in ("https://stellody.com/", "https://stellody.com/pricing", "https://stellody.com/contact"):
+        assert url in xml
+    for url in ("https://stellody.com/cart", "https://stellody.com/checkout"):
+        assert url not in xml
 
 
 def test_seo_helpers_cover_relative_and_non_relative_paths(client: TestClient) -> None:
