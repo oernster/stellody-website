@@ -20,6 +20,12 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
         name="static",
     )
 
+    app.mount(
+        "/downloads",
+        StaticFiles(directory=str(resolved_paths.downloads_dir)),
+        name="downloads",
+    )
+
     templates = Jinja2Templates(directory=str(resolved_paths.templates_dir))
     app.state.renderer = JinjaPageRenderer(templates=templates)
 

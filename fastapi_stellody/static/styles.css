@@ -286,6 +286,49 @@ p {
   );
 }
 
+/* Format tables (used on Home + Help pages) */
+.formats table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.25em;
+}
+
+.formats th {
+  color: #fff4b8;
+  text-align: left;
+  border-bottom: 2px solid rgba(255, 244, 184, 0.85);
+  padding: 0.5em;
+}
+
+.formats td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.5em;
+  color: #ffffff;
+}
+
+.formats .fmt-code {
+  display: inline-block;
+  background: rgba(255, 244, 184, 0.15);
+  border: 1px solid rgba(255, 244, 184, 0.4);
+  padding: 0.15em 0.45em;
+  margin: 0 0.2em 0.2em 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.85em;
+  color: #fff4b8;
+  border-radius: 8px;
+}
+
+.formats .fmt-type {
+  font-weight: 700;
+  color: #fff4b8;
+}
+
+.formats .fmt-notes {
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
 .steps {
   margin: 10px 0 16px;
   padding-left: 18px;

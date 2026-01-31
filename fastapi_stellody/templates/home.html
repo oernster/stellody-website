@@ -6,7 +6,7 @@
 
     <figure class="center media" aria-label="Stellody logo">
       <img
-        src="https://stellody.com/wp-content/uploads/2025/12/cropped-stellody_5x-scaled-1.png"
+        src="/static/stellody-logo.png"
         alt="Stellody – genre-based Spotify playlist generator"
         style="width: 200px; height: auto"
       />
@@ -32,25 +32,25 @@
     <p class="center info info--green">Works with Spotify Free &amp; Premium</p>
 
     <div class="button-row center">
-      <a class="button button--primary" href="https://stellody.com/stellody-demo-license/" target="_blank" rel="noopener">
+      <a class="button button--primary" href="/demo">
         Get Demo License
       </a>
-      <a class="button" href="https://stellody.com/product/stellody-standard-license/" target="_blank" rel="noopener">
+      <a class="button" href="/standard-license">
         Buy Stellody Standard License
       </a>
-      <a class="button" href="https://stellody.com/product/stellody-professional-license/" target="_blank" rel="noopener">
+      <a class="button" href="/pro-license">
         Buy Stellody Professional License
       </a>
     </div>
 
     <div class="button-row center" style="margin-top: 12px">
-      <a class="button" href="https://www.stellody.com/downloads/stellody_installer.exe" target="_blank" rel="noopener">
+      <a class="button" href="/downloads/stellody_installer.exe">
         Download for Windows
       </a>
-      <a class="button" href="https://www.stellody.com/downloads/stellody.flatpak" target="_blank" rel="noopener">
+      <a class="button" href="/downloads/stellody.flatpak">
         Download for Linux
       </a>
-      <a class="button" href="https://www.stellody.com/downloads/stellody.dmg" target="_blank" rel="noopener">
+      <a class="button" href="/downloads/stellody.dmg">
         Download for macOS
       </a>
     </div>
@@ -58,14 +58,14 @@
 
   <section class="card" style="margin-bottom: 14px">
     <figure class="media">
-      <video controls src="https://stellody.com/wp-content/uploads/2026/01/Stellody510.mp4"></video>
+      <video controls src="/static/Stellody510.mp4"></video>
     </figure>
   </section>
 
   <section class="card" style="margin-bottom: 14px">
     <figure class="media">
       <img
-        src="https://stellody.com/wp-content/uploads/2026/01/stellody-options-2.png"
+        src="/static/stellody-options-2.png"
         alt="Stellody playlist generation options"
       />
     </figure>
@@ -78,5 +78,63 @@
     Stellody analyses your artists, discovers related artists, and identifies accurate music genres using MusicBrainz metadata.<br />
     It then generates ready‑made, genre‑based Spotify playlists automatically (Spotify Free or Premium).
   </p>
+
+  <section class="card" style="margin-top: 14px">
+    <h3 class="center" style="margin-top: 0">Supported audio formats</h3>
+    <div class="formats" style="margin-top: 1em">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Extensions</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fmt-type">Lossless</td>
+            <td>
+              <span class="fmt-code">flac</span>
+              <span class="fmt-code">alac</span>
+              <span class="fmt-code">wav</span>
+              <span class="fmt-code">aiff</span>
+              <span class="fmt-code">aif</span>
+              <span class="fmt-code">aifc</span>
+              <span class="fmt-code">wv</span>
+              <span class="fmt-code">ape</span>
+              <span class="fmt-code">tak</span>
+            </td>
+            <td class="fmt-notes">WV = WavPack; APE = Monkey’s Audio; TAK = Tom’s lossless Audio Kompressor</td>
+          </tr>
+          <tr>
+            <td class="fmt-type">Lossy</td>
+            <td>
+              <span class="fmt-code">mp3</span>
+              <span class="fmt-code">m4a</span>
+              <span class="fmt-code">aac</span>
+              <span class="fmt-code">ogg</span>
+              <span class="fmt-code">opus</span>
+              <span class="fmt-code">wma</span>
+              <span class="fmt-code">webm</span>
+            </td>
+            <td class="fmt-notes"></td>
+          </tr>
+          <tr>
+            <td class="fmt-type">Less common</td>
+            <td>
+              <span class="fmt-code">ac3</span>
+              <span class="fmt-code">mka</span>
+              <span class="fmt-code">ra</span>
+              <span class="fmt-code">ram</span>
+              <span class="fmt-code">mid</span>
+              <span class="fmt-code">midi</span>
+              <span class="fmt-code">caf</span>
+            </td>
+            <td class="fmt-notes">MKA = Matroska Audio; CAF = Apple Core Audio Format</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 {% endblock %}
 
