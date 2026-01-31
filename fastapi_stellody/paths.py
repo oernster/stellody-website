@@ -16,10 +16,6 @@ class AppPaths:
     def static_dir(self) -> Path:
         return self.base_dir / "static"
 
-    @property
-    def downloads_dir(self) -> Path:
-        return self.base_dir / "downloads"
-
 
 def default_paths() -> AppPaths:
     return AppPaths(base_dir=Path(__file__).resolve().parent)

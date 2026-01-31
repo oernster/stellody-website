@@ -11,7 +11,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi_stellody.email_delivery import build_resend_sender_from_env
 from fastapi_stellody.paths import AppPaths, default_paths
 from fastapi_stellody.rendering import JinjaPageRenderer
-from fastapi_stellody.routers import contact, home, pages, store
+from fastapi_stellody.routers import contact, downloads, home, pages, store
 from fastapi_stellody.routers import seo_assets
 
 
@@ -46,12 +46,6 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
         name="static",
     )
 
-    app.mount(
-        "/downloads",
-        StaticFiles(directory=str(resolved_paths.downloads_dir)),
-        name="downloads",
-    )
-
     templates = Jinja2Templates(directory=str(resolved_paths.templates_dir))
     app.state.renderer = JinjaPageRenderer(templates=templates)
 
@@ -63,5 +57,6 @@ def create_app(paths: AppPaths | None = None) -> FastAPI:
     app.include_router(contact.router)
     app.include_router(store.router)
     app.include_router(seo_assets.router)
+    app.include_router(downloads.router)
 
     return app

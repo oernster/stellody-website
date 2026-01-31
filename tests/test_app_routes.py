@@ -201,6 +201,33 @@ def test_static_assets_are_served(client: TestClient) -> None:
     assert "text/css" in response.headers.get("content-type", "")
 
 
+def test_download_redirects_to_github_release_assets(client: TestClient) -> None:
+    base = "https://github.com/oernster/stellody-website/releases/download/v1.3.0"
+
+    cases = (
+        ("/downloads/stellody.dmg", f"{base}/stellody.dmg"),
+        ("/downloads/stellody.flatpak", f"{base}/stellody.flatpak"),
+        ("/downloads/stellody_installer.exe", f"{base}/stellody_installer.exe"),
+    )
+
+    for path, expected_location in cases:
+        response = client.get(path, follow_redirects=False)
+        assert response.status_code == 307
+        assert response.headers["location"] == expected_location
+
+
+def test_download_redirect_uses_tag_released_version_env_var(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("TAG_RELEASED_VERSION", "v9.9.9")
+    response = client.get("/downloads/stellody.dmg", follow_redirects=False)
+    assert response.status_code == 307
+    assert (
+        response.headers["location"]
+        == "https://github.com/oernster/stellody-website/releases/download/v9.9.9/stellody.dmg"
+    )
+
+
 def test_canonical_and_open_graph_tags_are_present(client: TestClient) -> None:
     response = client.get("/pricing")
     assert response.status_code == 200

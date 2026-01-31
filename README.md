@@ -17,6 +17,7 @@ Pages are implemented as small, focused routers (see [`fastapi_stellody/routers/
 - FastAPI backend with Jinja2 server-side rendering
 - Multi-page routes (home, pricing, licenses, FAQ, contact, cart/checkout)
 - Static assets served from `/static` (CSS/JS/favicon)
+- Release-based download redirects under `/downloads/*` (no binaries stored/built/proxied by the app)
 - Simple contact form handler (placeholder redirect)
 - Automated tests with 100% Python coverage via [`pytest.ini`](pytest.ini:1) / [`.coveragerc`](.coveragerc:1)
 
@@ -60,6 +61,20 @@ on a default, but for production set a strong secret:
 ```bash
 set SESSION_SECRET=replace-with-a-long-random-value
 ```
+
+### Release-based downloads (installer redirects)
+
+Installer artifacts are not stored in this repository. Instead, the site exposes stable URLs under
+`/downloads/*` that redirect (HTTP 307) directly to GitHub Release assets.
+
+The release tag is controlled by `TAG_RELEASED_VERSION` (recommended for Render). If unset, the
+application defaults deterministically to `v1.3.0`.
+
+Examples:
+
+- `/downloads/stellody.dmg`
+- `/downloads/stellody.flatpak`
+- `/downloads/stellody_installer.exe`
 
 ### Alternate: run Uvicorn directly
 
