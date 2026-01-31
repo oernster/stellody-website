@@ -23,7 +23,8 @@ def _get_env_required(name: str) -> str:
 class ResendEmailSender:
     api_key: str
     contact_recipient: str
-    from_address: str = "no-reply@resend.dev"
+    # Use a verified sender when available (configurable via RESEND_FROM).
+    from_address: str = "Stellody Contact <no-reply@stellody.com>"
 
     async def send_contact_email(self, *, name: str, email: str, message: str) -> None:
         resend.api_key = self.api_key
@@ -56,6 +57,9 @@ def build_resend_sender_from_env() -> ResendEmailSender:
     return ResendEmailSender(
         api_key=_get_env_required("RESEND_API_KEY"),
         contact_recipient=_get_env_required("CONTACT_RECIPIENT"),
-        from_address=os.environ.get("RESEND_FROM", "no-reply@resend.dev"),
+        from_address=os.environ.get(
+            "RESEND_FROM",
+            "Stellody Contact <no-reply@stellody.com>",
+        ),
     )
 
