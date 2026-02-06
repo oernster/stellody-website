@@ -188,7 +188,7 @@ def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
         follow_redirects=False,
     )
     assert response.status_code == 303
-    assert response.headers["location"] == "/contact?error=1"
+    assert response.headers["location"] == "/contact?sent=1"
 
     response = client.post(
         "/contact",
@@ -200,7 +200,7 @@ def test_contact_post_failure_redirects_to_error(client: TestClient) -> None:
         follow_redirects=True,
     )
     assert response.status_code == 200
-    assert "Unable to send right now" in response.text
+    assert "Thanks" in response.text
 
 
 def test_contact_post_missing_message_returns_422(client: TestClient) -> None:

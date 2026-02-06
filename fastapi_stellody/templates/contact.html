@@ -5,11 +5,24 @@
 
   {% if request.query_params.get('sent') == '1' %}
     <div class="notice notice--success">Thanks - your message has been sent.</div>
-  {% elif request.query_params.get('error') == '1' %}
-    <div class="notice notice--error">Unable to send right now. Please try again later.</div>
   {% endif %}
 
   <form class="form" method="post" action="/contact">
+    {# Honeypot field: should remain empty. Hidden via CSS and removed from tab order. #}
+    <div class="field honeypot" aria-hidden="true">
+      <label class="field">
+        <span class="field-label">Company</span>
+        <input
+          class="input"
+          name="company"
+          tabindex="-1"
+          autocomplete="off"
+          inputmode="none"
+          value=""
+        />
+      </label>
+    </div>
+
     <label class="field">
       <span class="field-label">Your name</span>
       <input class="input" name="name" autocomplete="name" required />
@@ -34,6 +47,11 @@
       <span class="field-label">Message</span>
       <textarea class="textarea" name="message" rows="6" required>{{ request.query_params.get('message', '') }}</textarea>
     </label>
+
+    {% if turnstile_enabled and turnstile_site_key %}
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+      <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div>
+    {% endif %}
 
     <div class="form-actions">
       <button class="button button--primary" type="submit">Send</button>

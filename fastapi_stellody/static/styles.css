@@ -519,6 +519,16 @@ p {
   flex-wrap: wrap;
 }
 
+/* Contact form anti-spam honeypot: visually hidden and non-interactive. */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .site-footer {
   border-top: 1px solid var(--border);
   background: rgba(11, 18, 32, 0.72);

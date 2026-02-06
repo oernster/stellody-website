@@ -23,6 +23,8 @@ def client() -> TestClient:
     os.environ.setdefault("RESEND_API_KEY", "test")
     os.environ.setdefault("CONTACT_RECIPIENT", "recipient@example.com")
     os.environ.setdefault("SESSION_SECRET", "test-session-secret")
+    # Keep Turnstile disabled in unit tests unless a test explicitly enables it.
+    os.environ.setdefault("TURNSTILE_ENABLED", "0")
 
     app = create_app()
 

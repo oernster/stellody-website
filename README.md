@@ -69,6 +69,40 @@ on a default, but for production set a strong secret:
 set SESSION_SECRET=replace-with-a-long-random-value
 ```
 
+### Contact form anti-spam (Cloudflare Turnstile)
+
+The contact form uses defense-in-depth controls in [`/contact` POST](fastapi_stellody/routers/contact.py:25):
+
+- Cloudflare Turnstile (primary)
+- Honeypot field (`company`)
+- Minimum submit time (3s)
+- Input hard limits + CR/LF stripping
+- Silent failure (bots do not get a failure oracle)
+
+To enable Turnstile in production:
+
+```bash
+set TURNSTILE_SITE_KEY=your-site-key
+set TURNSTILE_SECRET_KEY=your-secret-key
+```
+
+Optional:
+
+```bash
+set TURNSTILE_ENABLED=1
+```
+
+When Turnstile is enabled, the widget is rendered by [`contact.html`](fastapi_stellody/templates/contact.html:1) and the backend verifies the token server-to-server.
+
+#### Cloudflare WAF / Rate limiting rules (recommended)
+
+Create Cloudflare rate limiting/WAF rules for **POST** requests to `/contact`:
+
+- Per-IP: **5 requests / minute**
+- Per-IP: **50 requests / day**
+
+Action: block or managed challenge. The backend is intentionally silent on failures.
+
 ### Release-based downloads (installer redirects)
 
 Installer artifacts are not stored in this repository. Instead, the site exposes stable URLs under

@@ -39,7 +39,7 @@ class ResendEmailSender:
         payload = {
             "from": self.from_address,
             "to": self.contact_recipient,
-            "subject": f"{safe_subject} (from {name})",
+            "subject": f"{safe_subject} (from {safe_name})",
             "reply_to": email,
             "html": (
                 f"<p><strong>Name:</strong> {safe_name}</p>"
