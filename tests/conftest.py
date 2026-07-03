@@ -1,33 +1,11 @@
 from __future__ import annotations
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 
 from fastapi_stellody.app_factory import create_app
 
 
-class _FakeEmailSender:
-    async def send_contact_email(
-        self, *, name: str, email: str, message: str, subject: str | None = None
-    ) -> None:
-        _ = (name, email, subject, message)
-        return None
-
-
 @pytest.fixture()
 def client() -> TestClient:
-    # Ensure app startup can build email sender config in tests (values are
-    # placeholders).
-    os.environ.setdefault("RESEND_API_KEY", "test")
-    os.environ.setdefault("CONTACT_RECIPIENT", "recipient@example.com")
-    os.environ.setdefault("SESSION_SECRET", "test-session-secret")
-    # Keep Turnstile disabled in unit tests unless a test explicitly enables it.
-    os.environ.setdefault("TURNSTILE_ENABLED", "0")
-
-    app = create_app()
-
-    # Avoid network access in tests.
-    app.state.email_sender = _FakeEmailSender()
-    return TestClient(app)
+    return TestClient(create_app())
