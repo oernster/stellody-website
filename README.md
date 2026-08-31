@@ -52,8 +52,22 @@ Then open `http://localhost:8000/`.
 
 ## Deploying
 
-`render.yaml` declares a Render **static site** publishing `./public`. There is
-no start command because there is no process to start.
+The live deployment is a Render **web service** that serves `public/` directly:
+
+| Setting | Value |
+| --- | --- |
+| Build command | `echo "static site, nothing to build"` |
+| Start command | `python -m http.server $PORT --directory public` |
+
+Nothing is installed and nothing is compiled; the build command exists only
+because Render requires one. `http.server` is single-threaded, which is
+sufficient here because Cloudflare sits in front and caches the images and the
+stylesheet, leaving the origin only four small HTML files to serve.
+
+`render.yaml` in the repository root describes the same site as a Render
+**static site** instead. It is not what is currently deployed, because a web
+service cannot be converted into a static site after creation. It stands ready
+for the day the service is replaced rather than edited.
 
 ## Licence
 
