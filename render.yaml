@@ -1,0 +1,18 @@
+# Render blueprint: Stellody's .com host, served as static files.
+#
+# There is no application here and nothing to build. The site is plain HTML,
+# CSS and images, so Render publishes the directory as it stands rather than
+# running a server to hand the same bytes over more slowly.
+services:
+  - type: web
+    name: stellody-website
+    runtime: static
+    staticPublishPath: ./public
+    buildCommand: ""
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin

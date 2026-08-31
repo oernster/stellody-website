@@ -1,90 +1,60 @@
-# <img width="48" height="48" alt="Stellody favicon" src="fastapi_stellody/static/favicon.ico" /> Stellody
+# <img width="48" height="48" alt="Stellody" src="public/favicon.ico" /> stellody-website
 
-A minimal placeholder website for Stellody: a single server-rendered page showing a
-sunny landscape (fields and trees) and a "coming soon" message.
+The `stellody.com` host for [Stellody](https://stellody.co.uk/), a local-first
+FLAC music player. This repository holds a static copy of the Stellody site so
+that the `.com` address reaches the product rather than a placeholder.
 
----
+## Who this is for
 
-## About
+Nobody, directly. It is infrastructure. If you want Stellody itself, go to
+[stellody.co.uk](https://stellody.co.uk/); if you want its source, go to
+[github.com/oernster/Stellody](https://github.com/oernster/Stellody).
 
-This is a deliberately small FastAPI app. It serves one page from a Jinja2 template
-and the favicon from `/static`. The sunny scene is drawn inline as SVG, so the page has
-no external asset dependencies.
+This is NOT the canonical site and NOT where the site is authored. It carries no
+application, no server, no forms and no analytics.
 
-It is intended as a stand-in while the full Stellody site is rebuilt. It is NOT a
-marketing site, a store, or a contact/download service; that functionality was removed.
+## Where the content comes from
 
----
+The pages under `public/` are copied from `docs/` in the Stellody repository,
+which is what GitHub Pages serves at `stellody.co.uk`. That copy is the source
+of truth; edits belong there and arrive here by being copied again.
+
+Two files are deliberately NOT copied across:
+
+| File | Why it stays behind |
+| --- | --- |
+| `CNAME` | It names the GitHub Pages custom domain; it means nothing on Render |
+| `sitemap.xml` | The primary host owns the sitemap, so this mirror does not offer a competing one |
+
+Every page keeps its `canonical`, `og:url` and `og:image` pointing at
+`https://stellody.co.uk/`. That is deliberate: it tells search engines which
+host owns the pages, so the two do not compete for the same content. Do not
+repoint them at this host.
 
 ## Stack
 
-| Concern    | Choice                          |
-| ---------- | ------------------------------- |
-| Web        | FastAPI + Jinja2 (server-side)  |
-| Server     | Uvicorn / ASGI                  |
-| Deployment | Render (`requirements.txt`)     |
-| Tests      | pytest, 100% coverage gate      |
+| Concern | Choice |
+| --- | --- |
+| Content | Plain HTML, CSS and images |
+| Build | None |
+| Runtime | None |
+| Hosting | Render static site, per `render.yaml` |
 
----
+## Serving it locally
 
-## Local development
+Any static file server will do:
 
-Install dependencies:
-
-```bash
-pip install -r fastapi_stellody/requirements.txt
-pip install -r requirements-dev.txt
+```
+python -m http.server 8000 --directory public
 ```
 
-Run via the shim entrypoint:
+Then open `http://localhost:8000/`.
 
-```bash
-python site.py
-```
+## Deploying
 
-Dev mode (auto-reload):
+`render.yaml` declares a Render **static site** publishing `./public`. There is
+no start command because there is no process to start.
 
-```bash
-python site.py --reload
-```
+## Licence
 
-Then open http://127.0.0.1:8004
-
-Alternate (run Uvicorn directly):
-
-```bash
-uvicorn fastapi_stellody.app:app --reload
-```
-
----
-
-## Tests (100% coverage)
-
-```bash
-python -m pytest -v --cov
-```
-
-## Formatting & linting
-
-```bash
-python -m black .
-python -m flake8 .
-```
-
----
-
-## Project layout
-
-- [`site.py`](site.py:1) - shim entrypoint (`python site.py`)
-- [`fastapi_stellody/app.py`](fastapi_stellody/app.py:1) - ASGI app export (`app = create_app()`)
-- [`fastapi_stellody/app_factory.py`](fastapi_stellody/app_factory.py:1) - FastAPI factory + the single placeholder route
-- [`fastapi_stellody/paths.py`](fastapi_stellody/paths.py:1) - templates/static path resolution
-- [`fastapi_stellody/templates/index.html`](fastapi_stellody/templates/index.html:1) - the placeholder page (inline SVG scene)
-- [`fastapi_stellody/static/`](fastapi_stellody/static/favicon.ico:1) - favicon
-- [`tests/`](tests/test_app_routes.py:1) - test suite
-
----
-
-## License
-
-LGPL-3.0. See [`LICENSE`](LICENSE:1).
+GPL-3.0. See [LICENSE](LICENSE).

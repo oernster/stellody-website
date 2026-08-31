@@ -1,0 +1,8 @@
+# robots.txt for stellody.com.
+# This host mirrors the Stellody site so the .com address reaches the product
+# rather than a placeholder. Every page here carries a canonical naming
+# https://stellody.co.uk/, which is the primary host and the one that owns the
+# sitemap. Crawling is allowed so that canonical can be read and honoured.
+User-agent: *
+Allow: /
+
