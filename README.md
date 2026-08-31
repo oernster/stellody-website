@@ -15,9 +15,15 @@ application, no server, no forms and no analytics.
 
 ## Where the content comes from
 
-The pages under `public/` are copied from `docs/` in the Stellody repository,
-which is what GitHub Pages serves at `stellody.co.uk`. That copy is the source
-of truth; edits belong there and arrive here by being copied again.
+The pages under `public/` come from `docs/` in the Stellody repository, which is
+what GitHub Pages serves at `stellody.co.uk`. That copy is the source of truth
+and edits belong there, never here.
+
+**Nothing in `public/` should ever be edited directly.** Stellody's
+`mirror-site.yml` workflow pushes into this repository whenever its `docs/`
+changes, so a local edit here is overwritten without warning the moment the
+source moves. Change `docs/` in Stellody instead; the commit that lands here is
+made by `github-actions[bot]` and names the Stellody commit it came from.
 
 Two files are deliberately NOT copied across:
 
