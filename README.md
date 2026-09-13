@@ -1,4 +1,4 @@
-# <img width="48" height="48" alt="Stellody" src="public/favicon.ico" /> stellody-website
+# <img width="64" height="64" alt="Stellody" src="public/favicon.ico" /> stellody-website
 
 The `stellody.com` host for [Stellody](https://stellody.co.uk/), a local-first
 FLAC music player. This repository holds a static copy of the Stellody site so
